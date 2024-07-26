@@ -1,0 +1,5 @@
+SECRET_KEY = "django-insecure-v18m57kzj9^5m5szagouybom^24h22vtbj6@=3w*^xrr+!=m3s"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+SIGNING_KEY = "OfzuXvidS6O6KGiLB5lZX61TbqK0zKjR"
