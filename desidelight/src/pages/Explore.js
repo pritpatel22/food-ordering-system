@@ -1,12 +1,16 @@
 // components/FoodList.js
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 // import { fetchFoods } from "../services/api";
 import fetchFoods from "../service/api";
 import style from "./style.module.css";
-
 const Explore = () => {
   const [foods, setFoods] = useState([]);
+  const history = useNavigate();
 
+  const handleDetailsClick = (id) => {
+    history(`/food/${id}`);
+  };
   useEffect(() => {
     const getFoods = async () => {
       try {
@@ -70,7 +74,10 @@ const Explore = () => {
                 </span>
                 <p className={style.text}>Add to Cart</p>
               </button>
-              <a className="btn btn-outline-success mb-2" href="/detail">
+              <a
+                className="btn btn-outline-success mb-2"
+                onClick={() => handleDetailsClick(food.id)}
+              >
                 Get Details
               </a>
             </div>

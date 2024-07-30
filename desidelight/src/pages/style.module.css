@@ -368,3 +368,128 @@
   transform: scale(0.95);
   transition-duration: 0.5s;
 }
+/* //i want to center detail_card in detail_container which is full view */
+/* Detail.css */
+.detail_container {
+  padding: 20px;
+  padding-top: 150px;
+  margin-top: 100px;
+}
+
+.detail_card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  height: 400px;
+}
+
+.detail_image {
+  /* margin-top: 80px; */
+  flex: 0 0 500px; /* Fixed width for the image container */
+  /* max-height: 100vh; Ensures the image doesn't exceed the viewport height */
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail_image img {
+  width: 100%;
+  transition: 0.5s all ease;
+  height: 400px; /* Maintain a
+  spect ratio */
+}
+
+.detail_content {
+  flex: 1; /* Takes up the remaining space */
+  /* max-height: 100vh; Ensures the content section doesn't exceed the viewport height */
+  height: 100%;
+  overflow-y: scroll; /* Adds vertical scrollbar if content overflows */
+
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+}
+
+.detail_title {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.detail_p,
+.detail_ul {
+  margin-bottom: 10px;
+}
+
+.detail_ul {
+  padding-left: 20px;
+}
+
+.detail_li {
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #555;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+/* Detail.css */
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .detail_container {
+    padding: 10px;
+    padding-top: 100px; /* Reduce padding for smaller screens */
+  }
+
+  .detail_card {
+    flex-direction: column; /* Stack items vertically on mobile */
+    align-items: center; /* Center items horizontally */
+  }
+
+  .detail_image {
+    width: 100%; /* Full width on mobile */
+    max-height: 200px; /* Limit height to fit on screen */
+    margin-bottom: 20px; /* Add space below the image */
+  }
+
+  .detail_image img {
+    width: 100%; /* Ensure image fills the container */
+    height: auto; /* Maintain aspect ratio */
+    /* margin-left: 10px; */
+    margin-right: 10px;
+  }
+
+  .detail_content {
+    width: 100%; /* Full width for the content section */
+    padding: 10px; /* Adjust padding for mobile */
+    border: none; /* Remove border for a cleaner look */
+    box-shadow: none; /* Remove shadow for mobile */
+    border-radius: 0;
+    overflow-y: visible;
+    /* Remove border radius */
+  }
+
+  .detail_title {
+    font-size: 1.5rem; /* Adjust font size for headings */
+    margin-bottom: 15px; /* Reduce bottom margin */
+  }
+
+  .detail_p,
+  .detail_ul {
+    margin-bottom: 8px; /* Reduce margin for better spacing */
+  }
+
+  .detail_ul {
+    padding-left: 0; /* Remove padding on mobile */
+  }
+
+  .detail_li {
+    font-size: 14px; /* Adjust font size for list items */
+  }
+}
+.detail_image img:hover {
+  filter: grayscale(0.5);
+}

@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import About from "./pages/About";
 import Activate from "./pages/Activate";
 import Dashboard from "./pages/Dashboard";
+import Details from "./pages/Details";
 import Explore from "./pages/Explore";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/activate" element={<Activate />} />
+          <Route path="/food/:id" element={<Details />} />
           <Route path="/explore" element={<Explore />} />
         </Routes>
       </Router>
