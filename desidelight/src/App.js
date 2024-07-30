@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import About from "./pages/About";
 import Activate from "./pages/Activate";
 import Dashboard from "./pages/Dashboard";
+import Explore from "./pages/Explore";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/activate" element={<Activate />} />
+          <Route path="/explore" element={<Explore />} />
         </Routes>
       </Router>
       <ToastContainer />

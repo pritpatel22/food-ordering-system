@@ -49,4 +49,24 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+from .models import Restaurant, Food
+
+
+class FoodInline(admin.TabularInline):
+    model = Food
+    extra = 1
+
+
+class RestaurantAdmin(admin.ModelAdmin):
+    inlines = [FoodInline]
+
+
+class FoodAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "price", "restaurant", "image")
+    search_fields = ("name", "restaurant__name")
+
+
+admin.site.register(Restaurant, RestaurantAdmin)
+admin.site.register(Food)
+
 admin.site.register(User, UserAdmin)

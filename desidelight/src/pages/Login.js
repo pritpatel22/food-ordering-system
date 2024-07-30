@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 // import { BiLogInCircle } from "react-icons/bi";
 // import { useDispatch, useSelector } from "react-redux";
 // import { login, reset, getUserInfo } from "../features/auth/authSlice";
 // import Spinner from "../components/Spinner";
+import style from "./style.module.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -52,12 +52,55 @@ const Login = () => {
 
   return (
     <>
-      <div className="container auth__container">
-        <h1 className="main__title">Login</h1>
+      <div className={style.login_form}>
+        <div className={style.form_container}>
+          <p className={style.title}>Login</p>
+          <form className={style.form}>
+            <div className={style.input_group}>
+              <label for="email">Email</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder=""
+                onChange={handleChange}
+                value={email}
+                required
+              />
+            </div>
+            <div className={style.input_group}>
+              <label for="password">Password</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder=""
+                onChange={handleChange}
+                value={password}
+                required
+              />
+              <div className={style.forgot}>
+                <a rel="noopener noreferrer" href="/resetpassword">
+                  Forgot Password ?
+                </a>
+              </div>
+            </div>
+            <button
+              className="btn btn-success d-block mx-auto w-100"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+      {/* <div className="container auth__container">
+        <h1 className="main__title">Login</h1> */}
 
-        {/* {isLoading && <Spinner />} */}
+      {/* {isLoading && <Spinner />} */}
 
-        <form className="auth__form">
+      {/* <form className="auth__form">
           <input
             type="text"
             placeholder="email"
@@ -84,7 +127,7 @@ const Login = () => {
             Login
           </button>
         </form>
-      </div>
+      </div> */}
     </>
   );
 };

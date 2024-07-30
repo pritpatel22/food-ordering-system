@@ -1,0 +1,76 @@
+.navbar {
+  background-color: #fff;
+  margin: 5px 5px;
+  border-radius: 10px;
+}
+.container-fluid {
+  background-color: red;
+}
+.navtext {
+  margin-left: 5px;
+  border-radius: 20px;
+  padding-right: 25px;
+  padding-left: 15px;
+  transition: 0.5s all ease-in;
+  font-size: 16px;
+  font-weight: 600;
+  color: #198754;
+}
+.navtext:hover {
+  background-color: #198754;
+  color: white;
+}
+.serachfield {
+  border-radius: 20px;
+  border-color: #198754;
+}
+.serachfield:hover {
+  box-shadow: 0 4px 4px 0 #198754;
+}
+.hero2 {
+  /* Replace with your own image */
+  text-align: center;
+  position: relative;
+  padding: 20px;
+}
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: transparent; /* Optional: background color for the container */
+}
+.searchfield {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+}
+
+.searchfield input {
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 300px;
+}
+
+.searchfield button:hover {
+  background-color: #2c8e60;
+}
+.searchfield button {
+  background-color: #198754;
+  color: white;
+  padding: 10 px;
+  border: none;
+}
+.fancytext {
+  font-size: 48px;
+  font-weight: bold;
+  color: #ff6347; /* Tomato color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+    -2px -2px 4px rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #198754, #198754);
+}
