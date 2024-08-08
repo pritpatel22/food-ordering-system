@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from .models import Restaurant, Food
+from .models import Restaurant, Food, Review
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # from rest_framework import
 User = get_user_model()
@@ -25,3 +27,24 @@ class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = "__all__"
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "password", "email")
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            validated_data["username"],
+            validated_data["email"],
+            validated_data["password"],
+        )
+        return user
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["food", "restaurant", "rating", "comment"]

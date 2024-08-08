@@ -10,23 +10,6 @@ const Navbar = () => {
   // const { user } = useSelector((state) => state.auth);
 
   return (
-    // <nav className="navbar">
-    //   <NavLink className="logo" to="/">
-    //     Logo
-    //   </NavLink>
-    //   <ul className="nav-links">
-    //     <NavLink className="nav-childs" to="/dashboard">
-    //       Dashboard
-    //     </NavLink>
-    //     <NavLink className="nav-childs" to="/" onClick={handleLogout}>
-    //       Logout
-    //     </NavLink>
-
-    //     <NavLink className="nav-childs" to="/dashboard">
-    //       Dashboard
-    //     </NavLink>
-    //   </ul>
-    // </nav>
     <nav className={`${style.navbar} navbar navbar-expand-lg  p-2 fixed-top`}>
       <div className="container-fluid">
         <a

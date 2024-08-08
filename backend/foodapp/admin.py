@@ -49,7 +49,7 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
-from .models import Restaurant, Food
+from .models import Restaurant, Food, Review
 
 
 class FoodInline(admin.TabularInline):
@@ -68,5 +68,5 @@ class FoodAdmin(admin.ModelAdmin):
 
 admin.site.register(Restaurant, RestaurantAdmin)
 admin.site.register(Food)
-
+admin.site.register(Review)
 admin.site.register(User, UserAdmin)

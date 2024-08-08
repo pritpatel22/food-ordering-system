@@ -73,10 +73,50 @@
 }
 /*setting this form to a center in page*/
 .login_form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-image: url("images/pexels-valeriya-1639562.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: grayscale(1.1);
   height: 100vh;
+  display: flex;
+  align-items: center; /* Vertically center content */
+  justify-content: flex-start; /* Align content to the left */
+  /* Full viewport height */
+  padding-left: 100px;
+}
+.home__buttons {
+  padding: 20px;
+  padding: 20px;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+.home__buttons h1 {
+  font-size: 70px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.home__buttons div {
+  display: flex;
+  gap: 20px;
+}
+.btns {
+  display: grid;
+  place-content: center;
+}
+@media (max-width: 600px) {
+  .login_form {
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    padding-left: 0; /* Remove left padding */
+  }
+  .home__buttons {
+    display: grid;
+    place-content: center;
+  }
+  .home__buttons h1 {
+    font-size: 50px;
+  }
 }
 /*making form responsible*/
 @media (max-width: 768px) {
@@ -374,6 +414,8 @@
   padding: 20px;
   padding-top: 150px;
   margin-top: 100px;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
 
 .detail_card {
@@ -492,4 +534,127 @@
 }
 .detail_image img:hover {
   filter: grayscale(0.5);
+}
+.wave_menu {
+  border: 4px solid #545fe5;
+  border-radius: 50px;
+  width: 200px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  transition: ease 0.2s;
+  position: relative;
+  background: #fff;
+}
+
+.wave_menu li {
+  list-style: none;
+  height: 30px;
+  width: 4px;
+  border-radius: 10px;
+  background: #545fe5;
+  margin: 0 6px;
+  padding: 0;
+  animation-name: wave1;
+  animation-duration: 0.3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  transition: ease 0.2s;
+}
+
+.wave_menu:hover > li {
+  background: #fff;
+}
+
+.wave_menu:hover {
+  background: #545fe5;
+}
+
+.wave_menu li:nth-child(2) {
+  animation-name: wave2;
+  animation-delay: 0.2s;
+}
+
+.wave_menu li:nth-child(3) {
+  animation-name: wave3;
+  animation-delay: 0.23s;
+  animation-duration: 0.4s;
+}
+
+.wave_menu li:nth-child(4) {
+  animation-name: wave4;
+  animation-delay: 0.1s;
+  animation-duration: 0.3s;
+}
+
+.wave_menu li:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.wave_menu li:nth-child(6) {
+  animation-name: wave2;
+  animation-duration: 0.5s;
+}
+
+.wave_menu li:nth-child(8) {
+  animation-name: wave4;
+  animation-delay: 0.4s;
+  animation-duration: 0.25s;
+}
+
+.wave_menu li:nth-child(9) {
+  animation-name: wave3;
+  animation-delay: 0.15s;
+}
+
+@keyframes wave1 {
+  from {
+    transform: scaleY(1);
+  }
+
+  to {
+    transform: scaleY(0.5);
+  }
+}
+
+@keyframes wave2 {
+  from {
+    transform: scaleY(0.3);
+  }
+
+  to {
+    transform: scaleY(0.6);
+  }
+}
+
+@keyframes wave3 {
+  from {
+    transform: scaleY(0.6);
+  }
+
+  to {
+    transform: scaleY(0.8);
+  }
+}
+
+@keyframes wave4 {
+  from {
+    transform: scaleY(0.2);
+  }
+
+  to {
+    transform: scaleY(0.5);
+  }
+}
+.review_container {
+  border: 2px solid black;
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #111827;
+  width: 100%;
 }

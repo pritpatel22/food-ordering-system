@@ -34,6 +34,7 @@ from django.db import models
 
 
 class Restaurant(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     address = models.TextField()
 
@@ -58,3 +59,18 @@ class Food(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    food = models.ForeignKey(Food, related_name="reviews", on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(
+        Restaurant, related_name="reviews", on_delete=models.CASCADE
+    )
+    rating = (
+        models.PositiveIntegerField()
+    )  # Assuming ratings are integers between 1 and 5
+    comment = models.TextField(blank=True, null=True)
+    # Add more fields if needed
+
+    def __str__(self):
+        return f"Review for {self.food.name} at {self.restaurant.name} - Rating: {self.rating}"

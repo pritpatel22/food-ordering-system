@@ -1,4 +1,3 @@
-import { useState } from "react";
 // import { BiLogInCircle } from "react-icons/bi";
 // import { useDispatch, useSelector } from "react-redux";
 // import { login, reset, getUserInfo } from "../features/auth/authSlice";
@@ -6,12 +5,12 @@ import { useState } from "react";
 import style from "./style.module.css";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   email: "",
+  //   password: "",
+  // });
 
-  const { email, password } = formData;
+  // const { email, password } = formData;
 
   // const dispatch = useDispatch();
   // const navigate = useNavigate();
@@ -20,22 +19,22 @@ const Login = () => {
   //   (state) => state.auth
   // );
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [e.target.name]: e.target.value,
+  //   }));
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    const userData = {
-      email,
-      password,
-    };
-    // dispatch(login(userData));
-  };
+  //   const userData = {
+  //     email,
+  //     password,
+  //   };
+  //   // dispatch(login(userData));
+  // };
 
   // useEffect(() => {
   //   if (isError) {
@@ -49,6 +48,7 @@ const Login = () => {
   //   dispatch(reset());
   //   dispatch(getUserInfo());
   // }, [isError, isSuccess, user, navigate, dispatch]);
+  // const { loginUser } = useContext(AuthContext);
 
   return (
     <>
@@ -63,8 +63,8 @@ const Login = () => {
                 name="email"
                 id="email"
                 placeholder=""
-                onChange={handleChange}
-                value={email}
+                // onChange={handleChange}
+                // value={email}
                 required
               />
             </div>
@@ -75,8 +75,8 @@ const Login = () => {
                 name="password"
                 id="password"
                 placeholder=""
-                onChange={handleChange}
-                value={password}
+                // onChange={handleChange}
+                // value={password}
                 required
               />
               <div className={style.forgot}>
@@ -88,7 +88,7 @@ const Login = () => {
             <button
               className="btn btn-success d-block mx-auto w-100"
               type="submit"
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
             >
               Login
             </button>

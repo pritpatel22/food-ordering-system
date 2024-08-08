@@ -5,14 +5,29 @@ export const Home = () => {
   return (
     <>
       <div className={style.login_form}>
-        <h1 className="main__title">DesiDelight</h1>
-        <div className="home__buttons">
-          <Link to="/login" className="btn btn-secondary">
-            Login
-          </Link>
-          <Link to="/register" className="btn btn-primary">
-            Sign up
-          </Link>
+        <div className={style.home__buttons}>
+          <div>
+            <blockquote>
+              <h1 className="main__title mb-3">DesiDelight</h1>
+              <abbr
+                style={{
+                  color: "white",
+                  display: "block",
+                  textAlign: "center",
+                }}
+              >
+                - Where every bite delights the soul -
+              </abbr>
+            </blockquote>
+          </div>
+          <div className={`${style.btns} mt-4`}>
+            <Link to="/login" className="btn btn-secondary w-25">
+              Login
+            </Link>
+            <Link to="/register" className="btn btn-primary w-25">
+              Sign up
+            </Link>
+          </div>
         </div>
       </div>
     </>
