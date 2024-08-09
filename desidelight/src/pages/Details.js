@@ -95,7 +95,7 @@ const Details = () => {
               </a>
               <h1 className={style.detail_title}>{food.name}</h1>
             </div>
-            <p className={style.detail_p}>
+            <p className={`${style.detail_p} mt-2`}>
               <strong style={{ fontSize: "20px" }}>Description : </strong>
               {food.description}
             </p>
@@ -110,62 +110,70 @@ const Details = () => {
             {/* ingredients info */}
             <div>
               <strong style={{ fontSize: "20px" }}>Ingredients:</strong>
-              <ul className={style.detail_ul}>
-                {food.ingredients.split("\n").map((ingredient, index) => (
-                  <li className={style.detail_li} key={index}>
-                    {ingredient}
-                  </li>
-                ))}
-              </ul>
+              {food.ingredients ? (
+                <ul className={style.detail_ul}>
+                  {food.ingredients.split("\n").map((ingredient, index) => (
+                    <li className={style.detail_li} key={index}>
+                      {ingredient}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No ingredients available</p>
+              )}
             </div>
             <div>
               <strong style={{ fontSize: "20px" }}>
                 Nutrition Information:
               </strong>
-              <ul className={style.detail_ul}>
-                <li className={style.detail_li}>
-                  <strong>Total Fat:</strong> {food.nutrition_info.Total_Fat}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Calories:</strong> {food.nutrition_info.Calories}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Saturated Fat:</strong>{" "}
-                  {food.nutrition_info.Saturated_Fat}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Trans Fat:</strong> {food.nutrition_info.Trans_Fat}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Sodium:</strong> {food.nutrition_info.Sodium}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Total Carbohydrates:</strong>{" "}
-                  {food.nutrition_info.Total_Carbohydrates}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Dietary Fiber:</strong>{" "}
-                  {food.nutrition_info.Dietary_Fiber}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Sugars:</strong> {food.nutrition_info.Sugars}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Protein:</strong> {food.nutrition_info.Protein}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Vitamin A:</strong> {food.nutrition_info.Vitamin_A}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Vitamin C:</strong> {food.nutrition_info.Vitamin_C}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Calcium:</strong> {food.nutrition_info.Calcium}
-                </li>
-                <li className={style.detail_li}>
-                  <strong>Iron:</strong> {food.nutrition_info.Iron}
-                </li>
-              </ul>
+              {food.nutrition_info ? (
+                <ul className={style.detail_ul}>
+                  <li className={style.detail_li}>
+                    <strong>Total Fat:</strong> {food.nutrition_info.Total_Fat}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Calories:</strong> {food.nutrition_info.Calories}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Saturated Fat:</strong>{" "}
+                    {food.nutrition_info.Saturated_Fat}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Trans Fat:</strong> {food.nutrition_info.Trans_Fat}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Sodium:</strong> {food.nutrition_info.Sodium}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Total Carbohydrates:</strong>{" "}
+                    {food.nutrition_info.Total_Carbohydrates}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Dietary Fiber:</strong>{" "}
+                    {food.nutrition_info.Dietary_Fiber}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Sugars:</strong> {food.nutrition_info.Sugars}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Protein:</strong> {food.nutrition_info.Protein}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Vitamin A:</strong> {food.nutrition_info.Vitamin_A}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Vitamin C:</strong> {food.nutrition_info.Vitamin_C}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Calcium:</strong> {food.nutrition_info.Calcium}
+                  </li>
+                  <li className={style.detail_li}>
+                    <strong>Iron:</strong> {food.nutrition_info.Iron}
+                  </li>
+                </ul>
+              ) : (
+                <p>No nutrition information available.</p>
+              )}
             </div>
             <p className={style.detail_p}>
               <strong style={{ fontSize: "20px" }}>Restaurant:</strong>{" "}

@@ -1,13 +1,15 @@
 from xml.dom import NotFoundErr
 from distributed import Status
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views import View
 from rest_framework import generics
 from .models import Restaurant, Food, Review, User
 from .serializers import RestaurantSerializer, FoodSerializer, ReviewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import AllowAny
-from django.db.models import Count
+from django.db.models import Count, Avg
 
 
 # Create your views here.
@@ -26,7 +28,6 @@ class FoodDetailView(generics.RetrieveAPIView):
     serializer_class = FoodSerializer
 
     def get(self, request, *args, **kwargs):
-        # Get the specific food item using the primary key (pk)
         food_item = self.get_object()
         food_serializer = self.get_serializer(food_item)
 
@@ -38,9 +39,6 @@ class FoodDetailView(generics.RetrieveAPIView):
         )
         rating_summary = {rating["rating"]: rating["count"] for rating in rating_count}
         reviews = Review.objects.filter(food=food_item).values("comment")
-        # Fetch the associated reviews for this food item
-
-        # Combine food details and reviews
         response_data = food_serializer.data
         response_data["rating_summary"] = rating_summary
         response_data["comments"] = list(reviews)
@@ -73,3 +71,41 @@ class ReviewCreateView(generics.CreateAPIView):
                 print(f"Field: {field}, Errors: {errors}")
         print("Serializer errors:", serializer.errors)
         return Response(serializer.errors, status=400)
+
+
+class TopFoodsView(View):
+    def get(self, request, *args, **kwargs):
+        # Annotate each food with its average rating
+        top_foods = Food.objects.annotate(
+            average_rating=Avg("reviews__rating")
+        ).order_by("-average_rating")[:4]
+
+        # Prepare the data to be returned as JSON
+        data = []
+        for food in top_foods:
+            # Calculate rating count for the current food item
+            rating_count = (
+                Review.objects.filter(food=food)
+                .values("rating")
+                .annotate(count=Count("rating"))
+                .order_by("rating")
+            )
+            # Prepare a dictionary for the rating summary
+            rating_summary = {
+                rating["rating"]: rating["count"] for rating in rating_count
+            }
+
+            data.append(
+                {
+                    "id": food.id,
+                    "name": food.name,
+                    "description": food.description,
+                    "price": food.price,
+                    "image": food.image.url if food.image else None,
+                    "average_rating": food.average_rating,
+                    "restaurant": food.restaurant.name,
+                    "rating_summary": rating_summary,  # Include rating summary
+                }
+            )
+
+        return JsonResponse(data, safe=False)

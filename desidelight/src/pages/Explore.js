@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { fetchFoods } from "../services/api";
+import { FaArrowRight } from "react-icons/fa";
 import fetchFoods from "../service/api";
 import style from "./style.module.css";
 const Explore = () => {
@@ -45,6 +46,21 @@ const Explore = () => {
       {foods.map((food) => (
         <div key={food.id} className={`col-sm-4 mt-5`}>
           <div className={`card ${style.foodcard}`}>
+            <div
+              className="card-header d-flex"
+              style={{ justifyContent: "space-between", color: "#3E4152" }}
+            >
+              <h6>
+                <b>{food.restaurant_name}</b>
+              </h6>
+
+              <button
+                className="btn"
+                onClick={() => handleDetailsClick(food.id)}
+              >
+                <FaArrowRight />
+              </button>
+            </div>
             <div className="mt-2">
               <img
                 src={food.image}

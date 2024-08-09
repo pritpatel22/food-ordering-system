@@ -16,9 +16,12 @@ class CreateUserSerializer(UserCreateSerializer):
 
 
 class FoodSerializer(serializers.ModelSerializer):
+    restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)
+
     class Meta:
         model = Food
         fields = "__all__"
+        extra_fields = ("restaurant_name",)
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
