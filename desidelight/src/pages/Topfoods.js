@@ -3,12 +3,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaShoppingCart, FaStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import style from "./style.module.css";
 
 const Topfoods = () => {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTopFoods = async () => {
@@ -26,6 +28,9 @@ const Topfoods = () => {
 
     fetchTopFoods();
   }, []);
+  function handleDetailsClick(id) {
+    navigate(`/food/${id}`);
+  }
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -36,7 +41,11 @@ const Topfoods = () => {
       <div className="row">
         {foods.map((food) => (
           <div className="col-md-3 mt-4" key={food.id}>
-            <a href="" style={{ textDecoration: "none", color: "black" }}>
+            <a
+              href=""
+              onClick={() => handleDetailsClick(food.id)}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <div className={style.Topfoods}>
                 <img
                   src={`http://localhost:8000${food.image}`}

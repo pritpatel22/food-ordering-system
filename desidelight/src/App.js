@@ -11,7 +11,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
-import Topfoods from "./pages/Topfoods";
+import Search from "./pages/Search";
 function App() {
   return (
     <>
@@ -27,8 +27,8 @@ function App() {
           <Route path="/activate" element={<Activate />} />
           <Route path="/food/:id" element={<Details />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
-        <Topfoods />
       </Router>
       <ToastContainer />
     </>

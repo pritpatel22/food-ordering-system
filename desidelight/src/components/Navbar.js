@@ -1,4 +1,5 @@
 import React from "react";
+import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import style from "./style.module.css";
 const Navbar = () => {
@@ -107,6 +108,17 @@ const Navbar = () => {
                 className={`nav-link ${style.navtext}`}
                 aria-disabled="true"
                 component={Link}
+                to="/search"
+                href="/search"
+              >
+                Search &nbsp; <FaSearch />
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className={`nav-link ${style.navtext}`}
+                aria-disabled="true"
+                component={Link}
                 to="/register"
                 href="/register"
               >
@@ -114,21 +126,6 @@ const Navbar = () => {
               </a>
             </li>
           </ul>
-          <form className="d-flex" role="search">
-            <input
-              className={`${style.serachfield} form-control me-2`}
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button
-              className="btn btn-outline-success"
-              type="submit"
-              style={{ border: "none" }}
-            >
-              <i className="fas fa-search"></i>
-            </button>
-          </form>
         </div>
       </div>
     </nav>

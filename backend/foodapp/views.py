@@ -1,5 +1,6 @@
 from xml.dom import NotFoundErr
 from distributed import Status
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -10,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import AllowAny
 from django.db.models import Count, Avg
+from django.db.models import Q
 
 
 # Create your views here.
@@ -109,3 +111,57 @@ class TopFoodsView(View):
             )
 
         return JsonResponse(data, safe=False)
+
+
+class SearchView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("q", "").strip()
+        print(query)
+        foods = Food.objects.filter(
+            Q(name__icontains=query) | Q(category__icontains=query)
+        ).annotate(average_rating=Avg("reviews__rating"))
+        print(foods)
+
+        restaurants = (
+            Restaurant.objects.filter(
+                Q(name__icontains=query) | Q(address__icontains=query)
+            )
+            .annotate(food_count=Count("foods"))
+            .prefetch_related("foods")
+        )
+        foods_data = []
+        for food in foods:
+            food_data = {
+                "id": food.id,
+                "name": food.name,
+                "price": food.price,
+                "category": food.category,
+                "image": f"{settings.MEDIA_URL}{food.image}",
+                "average_rating": food.average_rating,
+                "restaurant_name": food.restaurant.name,
+                "restaurant_address": food.restaurant.address,
+            }
+            foods_data.append(food_data)
+
+        restaurants_data = []
+        for restaurant in restaurants:
+            food_items = list(
+                restaurant.foods.values("id", "name", "price", "category", "image")
+            )
+            restaurant_data = {
+                "id": restaurant.id,
+                "name": restaurant.name,
+                "address": restaurant.address,
+                "food_count": restaurant.food_count,
+                "food_items": food_items,
+            }
+            restaurants_data.append(restaurant_data)
+        print(foods_data)
+        response_data = {
+            "search_type": (
+                "food" if foods_data else "restaurant" if restaurants_data else "none"
+            ),
+            "foods": foods_data,
+            "restaurants": restaurants_data,
+        }
+        return JsonResponse(response_data)

@@ -5,6 +5,7 @@ from .views import (
     FoodList,
     FoodDetailView,
     ReviewCreateView,
+    SearchView,
     TopFoodsView,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -17,6 +18,7 @@ urlpatterns = [
     path("food/<int:pk>/", FoodDetailView.as_view(), name="food"),
     path("food/<int:pk>/add_review/", ReviewCreateView.as_view(), name="add_review"),
     path("food/top-foods/", TopFoodsView.as_view(), name="add_review"),
+    path("food/search/", SearchView.as_view(), name="search"),
     # path("reviews/", ReviewListCreateView.as_view(), name="review-list-create"),
 ]
 if settings.DEBUG:
