@@ -2,12 +2,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from .manager import CustomUserManager
+from django.contrib.auth.models import UserManager as DefaultManager
 
 # Create your models here.
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_("Username"), max_length=100)
+    mobile = models.CharField(_("Mobile Number"), max_length=15, blank=True, null=True)
+    address = models.TextField(_("Address"), blank=True, null=True)
     email = models.EmailField(_("Email"), unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -15,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
-    objects = CustomUserManager()
+    objects = DefaultManager()
 
     class Meta:
         verbose_name = _("User")
@@ -74,3 +77,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review for {self.food.name} at {self.restaurant.name} - Rating: {self.rating}"
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cart {self.id} for {self.user.username}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.food.name} in Cart {self.cart.id}"

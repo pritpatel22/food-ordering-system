@@ -71,6 +71,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "desidelight.urls"
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 TEMPLATES = [
     {
@@ -148,13 +152,13 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+
 SIMPLE_JWT = {
-    "AUTH.HEADER_TYPES": ("Bearer", "JWT"),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=60),
     "SIGNING_KEY": "OfzuXvidS6O6KGiLB5lZX61TbqK0zKjR",
-    "AUTH_HEADERS_NAME": "HTTP_AUTHORIZATION",
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.token.AccessToken"),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 DJOSER = {
     "LOGIN_FIELD": "email",

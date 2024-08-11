@@ -2,8 +2,15 @@
 
 import axios from "axios";
 import React, { useState } from "react";
-import { FaSearch, FaShoppingCart, FaStar } from "react-icons/fa";
+import {
+  FaCartPlus,
+  FaSearch,
+  FaShoppingCart,
+  FaStar,
+  FaWpexplorer,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 import style from "./style.module.css";
 
 const Search = () => {
@@ -16,7 +23,6 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const handleSearch = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -100,14 +106,17 @@ const Search = () => {
   );
 
   const restaurantsearch = () => (
-    <div className="container my-4">
+    <div
+      className="container my-4"
+      style={{ display: "grid", placeContent: "center" }}
+    >
       <h2>Restaurant Search Results</h2>
-      <div className="row gap-5">
+      <div className="row gap-5   w-100">
         {results.restaurants.map((restaurant) => (
           <div
-            className="col-md-3 mt-4"
+            className="col-md-12 mt-4"
             style={{
-              backgroundColor: "lightgray",
+              backgroundColor: "#f5f5f5",
               display: "grid",
               placeContent: "center",
               padding: "15px",
@@ -115,37 +124,51 @@ const Search = () => {
             }}
             key={restaurant.id}
           >
-            <Link
-              to={`/restaurant/${restaurant.id}`} // Adjust this route as needed
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <div className={style.Topfoods}>
-                <div style={{ marginTop: "10px" }}>
-                  <h5>{restaurant.name}</h5>
-                  <p>
-                    <b>Address : </b>
-                    {restaurant.address}
-                  </p>
-                  <p>
-                    <b>Foods Available : </b>
-                    {restaurant.food_count}
-                  </p>
-                  <ul>
-                    {restaurant.food_items.map((food) => (
-                      <li key={food.id}>
-                        <img src={`/media/${food.image}`} alt={food.name} />
-                        <p>{food.name}</p>
-                        <p>Price: ${food.price}</p>
-                        <p>Category: {food.category}</p>
-                      </li>
-                    ))}
-                  </ul>
-                  <button className="btn btn-success w-100">
-                    <FaShoppingCart />
-                  </button>
-                </div>
+            <div className={style.Topfoods}>
+              <div style={{ marginTop: "10px" }}>
+                <h5 className="text-success">{restaurant.name}</h5>
+                <p style={{ color: "#686B78" }}>
+                  <b>Address : </b>
+                  {restaurant.address}
+                </p>
+                <p style={{ color: "#686B78" }}>
+                  <b>Foods Available : </b>
+                  {restaurant.food_count}
+                </p>
+
+                {restaurant.food_items.map((food) => (
+                  <div className="mt-5">
+                    <h5>
+                      <b>{food.name}</b>
+                    </h5>
+                    <p>
+                      <b>Price: </b>
+                      {food.price}/-
+                    </p>
+                    <p>
+                      <b>Category:</b> {food.category}
+                    </p>
+                    <div className="d-flex gap-3">
+                      <button className="btn btn-outline-success">
+                        <FaCartPlus /> <b>Add to cart</b>
+                      </button>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleDetailsClick(food.id)}
+                      >
+                        <b>See</b>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                <button className="btn btn-success w-100 mt-5">
+                  <FaWpexplorer />
+                  &nbsp;
+                  <b> Check Restaurant</b>
+                </button>
               </div>
-            </Link>
+            </div>
           </div>
         ))}
       </div>
@@ -153,25 +176,39 @@ const Search = () => {
   );
 
   return (
-    <div className="mt-5">
-      <h2>Search Results</h2>
-      <form onSubmit={handleSearch}>
-        <input
-          className="form-input"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search"
-        />
-        <button type="submit" className="btn btn-success">
-          <FaSearch />
-        </button>
-      </form>
-      {loading && <p>Loading...</p>}
+    <div className="mt-5 container-fluid" style={{ paddingTop: "50px" }}>
+      <div className="mt-5 container p-3" style={{}}>
+        <form onSubmit={handleSearch} style={{ display: "flex", gap: "10px" }}>
+          <input
+            style={{
+              border: "2px solid #f5f5f5",
+              padding: "10px",
+              borderRadius: "10px",
+              width: "100%",
+              boxShadow: "0 0 10px rgba(0, 0, 0);",
+            }}
+            className="form-control"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search"
+          />
+          <button type="submit" className="btn btn-success">
+            <FaSearch />
+          </button>
+        </form>
+      </div>
+      {loading && (
+        <p className="text-center">
+          <Spinner />
+        </p>
+      )}
       {error && <p>{error}</p>}
       {results.search_type === "food" && fooddearch()}
       {results.search_type === "restaurant" && restaurantsearch()}
-      {results.search_type === "none" && <p>No results found.</p>}
+      {results.search_type === "none" && (
+        <p className="text-center">No results found.</p>
+      )}
     </div>
   );
 };

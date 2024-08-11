@@ -14,14 +14,22 @@ class UserAdmin(BaseUserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ["email", "username", "is_staff", "is_active", "is_superuser"]
+    list_display = [
+        "email",
+        "username",
+        "is_staff",
+        "is_active",
+        "is_superuser",
+        "mobile",
+        "address",
+    ]
     list_display_links = ["email"]
     list_filter = ["is_staff", "is_active", "is_superuser"]
     search_fields = ["email", "username"]
     # Define the fieldsets
     fieldsets = (
         (_("Login Credentials"), {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("username",)}),
+        (_("Personal info"), {"fields": ("username", "mobile", "address")}),
         (
             _("Permissions"),
             {
@@ -43,13 +51,20 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "username", "password1", "password2"),
+                "fields": (
+                    "email",
+                    "username",
+                    "password1",
+                    "password2",
+                    "mobile",
+                    "address",
+                ),
             },
         ),
     )
 
 
-from .models import Restaurant, Food, Review
+from .models import Restaurant, Food, Review, Cart, CartItem
 
 
 class FoodInline(admin.TabularInline):
@@ -69,4 +84,6 @@ class FoodAdmin(admin.ModelAdmin):
 admin.site.register(Restaurant, RestaurantAdmin)
 admin.site.register(Food)
 admin.site.register(Review)
+admin.site.register(CartItem)
+admin.site.register(Cart)
 admin.site.register(User, UserAdmin)

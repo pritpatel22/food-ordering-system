@@ -3,11 +3,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { fetchFoods } from "../services/api";
 import { FaArrowRight } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 import fetchFoods from "../service/api";
 import style from "./style.module.css";
 const Explore = () => {
   const [foods, setFoods] = useState([]);
   const history = useNavigate();
+  const { cart } = useCart();
+
+  const handleaddtocart = (id) => {
+    cart(id);
+  };
 
   const handleDetailsClick = (id) => {
     history(`/food/${id}`);
@@ -76,7 +82,10 @@ const Explore = () => {
               </p>
             </div>
             <div style={{ display: "flex", gap: "10px" }}>
-              <button className={`${style.CartBtn} btn btn-success`}>
+              <button
+                className={`${style.CartBtn} btn btn-success`}
+                onClick={() => handleaddtocart(food.id)}
+              >
                 <span className={style.IconContainer}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

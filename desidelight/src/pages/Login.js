@@ -1,134 +1,85 @@
-// import { BiLogInCircle } from "react-icons/bi";
-// import { useDispatch, useSelector } from "react-redux";
-// import { login, reset, getUserInfo } from "../features/auth/authSlice";
-// import Spinner from "../components/Spinner";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "./AuthContext";
 import style from "./style.module.css";
 
 const Login = () => {
-  // const [formData, setFormData] = useState({
-  //   email: "",
-  //   password: "",
-  // });
+  const [email, setemail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  // const { email, password } = formData;
-
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
-  // const { user, isLoading, isError, isSuccess, message } = useSelector(
-  //   (state) => state.auth
-  // );
-
-  // const handleChange = (e) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [e.target.name]: e.target.value,
-  //   }));
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const userData = {
-  //     email,
-  //     password,
-  //   };
-  //   // dispatch(login(userData));
-  // };
-
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error(message);
-  //   }
-
-  //   if (isSuccess || user) {
-  //     navigate("/dashboard");
-  //   }
-
-  //   dispatch(reset());
-  //   dispatch(getUserInfo());
-  // }, [isError, isSuccess, user, navigate, dispatch]);
-  // const { loginUser } = useContext(AuthContext);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await loginUser({ email, password });
+      localStorage.setItem("token", response.data.access);
+      localStorage.setItem("userEmail", email);
+      navigate(`/profile/${email}`); // Redirect to profile or home after login
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+  };
+  const loginUser = async (credentials) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/login/",
+        credentials
+      );
+      localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("refresh_token", response.data.refresh);
+      localStorage.setItem("userEmail", email);
+      toast.success("success");
+      navigate(`/profile/${String(email)}`);
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Login failed");
+    }
+  };
 
   return (
-    <>
-      <div className={style.login_form}>
-        <div className={style.form_container}>
-          <p className={style.title}>Login</p>
-          <form className={style.form}>
-            <div className={style.input_group}>
-              <label for="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder=""
-                // onChange={handleChange}
-                // value={email}
-                required
-              />
+    <div className={style.login_form}>
+      <div className={style.form_container}>
+        <p className={style.title}>Login</p>
+        {error && <p className={style.error}>{error}</p>}{" "}
+        {/* Display error if any */}
+        <form className={style.form} onSubmit={handleSubmit}>
+          <div className={style.input_group}>
+            <label htmlFor="username">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="Email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div className={style.forgot}>
+              <a href="/resetpassword">Forgot Password ?</a>
             </div>
-            <div className={style.input_group}>
-              <label for="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder=""
-                // onChange={handleChange}
-                // value={password}
-                required
-              />
-              <div className={style.forgot}>
-                <a rel="noopener noreferrer" href="/resetpassword">
-                  Forgot Password ?
-                </a>
-              </div>
-            </div>
-            <button
-              className="btn btn-success d-block mx-auto w-100"
-              type="submit"
-              // onClick={handleSubmit}
-            >
-              Login
-            </button>
-          </form>
-        </div>
-      </div>
-      {/* <div className="container auth__container">
-        <h1 className="main__title">Login</h1> */}
-
-      {/* {isLoading && <Spinner />} */}
-
-      {/* <form className="auth__form">
-          <input
-            type="text"
-            placeholder="email"
-            name="email"
-            onChange={handleChange}
-            value={email}
-            required
-          />
-          <input
-            type="password"
-            placeholder="password"
-            name="password"
-            onChange={handleChange}
-            value={password}
-            required
-          />
-          <Link to="/resetpassword">Forget Password ?</Link>
-
+          </div>
           <button
-            className="btn btn-primary"
+            className="btn btn-success d-block mx-auto w-100"
             type="submit"
-            onClick={handleSubmit}
           >
             Login
           </button>
         </form>
-      </div> */}
-    </>
+      </div>
+    </div>
   );
 };
 

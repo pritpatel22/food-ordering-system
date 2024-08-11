@@ -1,133 +1,142 @@
+import axios from "axios"; // Ensure axios is imported
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import style from "./style.module.css";
+
 export const Register = () => {
-  const [formdata, setformdata] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     re_password: "",
+    mobile: "",
+    address: "",
   });
-  const { username, email, password, re_password } = formdata;
-  function handlechange(e) {
-    setformdata((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    // console.log(formdata);
-  }
-  const handlesubmit = (e) => {
+  const { username, email, password, re_password, mobile, address } = formData;
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== re_password) {
-      // alert("password not match")
-      toast.error("password not match");
+      toast.error("Passwords do not match");
     } else {
+      try {
+        // Direct registration function here
+        await registerUser({ username, email, password, mobile, address });
+        navigate("/profile");
+      } catch (err) {
+        toast.error(err.message || "Failed to register");
+      }
     }
   };
+
+  // Direct registration function defined within the component
+  const registerUser = async (userData) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/register/",
+        userData
+      );
+      toast.success("success");
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Registration failed");
+    }
+  };
+
   return (
-    <>
-      <div className={style.login_form}>
-        <div className={style.form_container}>
-          <p className={style.title}>Register</p>
-          <form className={style.form} onSubmit={handlesubmit}>
-            <div className={style.input_group}>
-              <label for="email">username</label>
-              <input
-                type="text"
-                id="username"
-                placeholder="username"
-                name="username"
-                onChange={handlechange}
-                value={formdata.username}
-                required
-              />
-            </div>
-            <div className={style.input_group}>
-              <label for="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder=""
-                onChange={handlechange}
-                value={formdata.email}
-                required
-              />
-            </div>
-            <div className={style.input_group}>
-              <label for="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="password"
-                name="password"
-                onChange={handlechange}
-                value={formdata.password}
-                required
-              />
-            </div>
-            <div className={style.input_group}>
-              <label for="re_password">re_password</label>
-              <input
-                type="password"
-                name="re_password"
-                id="re_password"
-                placeholder=""
-                onChange={handlechange}
-                value={formdata.re_password}
-                required
-              />
-            </div>
-            <button
-              className="btn btn-success d-block mx-auto w-100 mt-3"
-              type="submit"
-              onClick={handlesubmit}
-            >
-              Register
-            </button>
-          </form>
-        </div>
-      </div>
-      {/* <div className="container auth__container">
-        <h1 className="main__title">
-          Register <FaUser />
-        </h1>
-        <form className="auth__form" onSubmit={handlesubmit}>
-          <input
-            type="text"
-            placeholder="username"
-            name="username"
-            onChange={handlechange}
-            value={formdata.username}
-            required
-          />
-          <input
-            type="email"
-            placeholder="email"
-            name="email"
-            onChange={handlechange}
-            value={formdata.email}
-            required
-          />
-          <input
-            type="password"
-            placeholder="password"
-            name="password"
-            onChange={handlechange}
-            value={formdata.username}
-            required
-          />
-          <input
-            type="password"
-            placeholder="re_password"
-            name="re_password"
-            onChange={handlechange}
-            value={formdata.re_password}
-            required
-          />
-          <button className="btn btn-primary">Register</button>
+    <div className={style.login_form}>
+      <div className={style.form_container}>
+        <p className={style.title}>Register</p>
+        <form className={style.form} onSubmit={handleSubmit}>
+          <div className={style.input_group}>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Username"
+              name="username"
+              onChange={handleChange}
+              value={username}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              onChange={handleChange}
+              value={email}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              name="password"
+              onChange={handleChange}
+              value={password}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="re_password">Confirm Password</label>
+            <input
+              type="password"
+              name="re_password"
+              id="re_password"
+              placeholder="Confirm Password"
+              onChange={handleChange}
+              value={re_password}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="mobile">Mobile Number</label>
+            <input
+              type="text"
+              name="mobile"
+              id="mobile"
+              placeholder="Mobile Number"
+              onChange={handleChange}
+              value={mobile}
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="address">Address</label>
+            <input
+              type="text"
+              name="address"
+              id="address"
+              placeholder="Address"
+              onChange={handleChange}
+              value={address}
+              required
+            />
+          </div>
+          <button
+            className="btn btn-success d-block mx-auto w-100 mt-3"
+            type="submit"
+          >
+            Register
+          </button>
         </form>
-        <ToastContainer position="top-right" />
-      </div> */}
-    </>
+      </div>
+    </div>
   );
 };
+
 export default Register;

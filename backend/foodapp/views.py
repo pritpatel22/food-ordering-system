@@ -1,20 +1,90 @@
 from xml.dom import NotFoundErr
-from distributed import Status
+from django.shortcuts import get_list_or_404
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from rest_framework import generics
-from .models import Restaurant, Food, Review, User
-from .serializers import RestaurantSerializer, FoodSerializer, ReviewSerializer
+from rest_framework import generics, viewsets, status
+from rest_framework.views import APIView
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Cart, CartItem, Restaurant, Food, Review, User
+from .serializers import (
+    RegisterSerializer,
+    RestaurantSerializer,
+    FoodSerializer,
+    ReviewSerializer,
+    CartItemSerializer,
+    CartSerializer,
+    UserSerializer,
+    LoginSerializer,
+)
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import AllowAny
 from django.db.models import Count, Avg
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
+
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"status": "User created"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if not email or not password:
+            return Response(
+                {"error": "Email and password required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        UserModel = get_user_model()
+        try:
+            user = UserModel.objects.get(email=email)
+            if user.check_password(password):
+                refresh = RefreshToken.for_user(user)
+                return Response(
+                    {
+                        "refresh": str(refresh),
+                        "access": str(refresh.access_token),
+                    },
+                    status=status.HTTP_200_OK,
+                )
+        except UserModel.DoesNotExist:
+            pass
+
+        return Response(
+            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+        )
+
+
+class ProfileView(APIView):
+    def get(self, request, email, format=None):
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
 class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
@@ -165,3 +235,48 @@ class SearchView(View):
             "restaurants": restaurants_data,
         }
         return JsonResponse(response_data)
+
+
+class Cart(viewsets.ViewSet):
+    def get_cart(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["post"])
+    def add_item(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        food_id = request.data.get("food_id")
+        quantity = request.data.get("quantity", 1)
+
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, food_id=food_id, defaults={"quantity": quantity}
+        )
+
+        if not created:
+            cart_item.quantity += quantity
+            cart_item.save()
+
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=["post"])
+    def remove_item(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        food_id = request.data.get("food_id")
+
+        CartItem.objects.filter(cart=cart, food_id=food_id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["post"])
+    def update_item(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        food_id = request.data.get("food_id")
+        quantity = request.data.get("quantity")
+
+        cart_item = CartItem.objects.get(cart=cart, food_id=food_id)
+        cart_item.quantity = quantity
+        cart_item.save()
+
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data)

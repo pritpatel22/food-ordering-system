@@ -1,15 +1,18 @@
 import React from "react";
-import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaSearch, FaUser } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../pages/AuthContext";
 import style from "./style.module.css";
 const Navbar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const handleLogout = () => {
-    // dispatch(logout());
-    // dispatch(reset());
-    // navigate("/");
+    logout();
+    navigate("/");
   };
   // const { user } = useSelector((state) => state.auth);
-
+  const useremail = localStorage.getItem("userEmail");
+  console.log(useremail);
   return (
     <nav className={`${style.navbar} navbar navbar-expand-lg  p-2 fixed-top`}>
       <div className="container-fluid">
@@ -114,17 +117,36 @@ const Navbar = () => {
                 Search &nbsp; <FaSearch />
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${style.navtext}`}
-                aria-disabled="true"
-                component={Link}
-                to="/register"
-                href="/register"
-              >
-                Register
-              </a>
-            </li>
+            {useremail ? (
+              <>
+                <li className="nav-item">
+                  <Link to={`/profile/${useremail}`} className="nav-link">
+                    <FaUser />
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-link">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

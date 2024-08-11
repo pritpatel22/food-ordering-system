@@ -1,78 +1,74 @@
-// import React, { createContext, useEffect, useState } from "react";
-// // import Ax from "./axiosInstance";
-// import { jwt_decode } from "jwt-decode";
-// import { Navigate } from "react-router-dom";
-// import AxiosInstance from "./AxiosInstance";
+import axios from "axios";
+import React, { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-// const AuthContext = createContext();
+const AuthContext = createContext();
 
-// export default AuthContext;
+export const useAuth = () => useContext(AuthContext);
 
-// export const AuthProvider = ({ children }) => {
-//   const [authTokens, setAuthTokens] = useState(() =>
-//     localStorage.getItem("authTokens")
-//       ? JSON.parse(localStorage.getItem("authTokens"))
-//       : null
-//   );
-//   const [user, setUser] = useState(() =>
-//     localStorage.getItem("authTokens")
-//       ? jwt_decode(localStorage.getItem("authTokens"))
-//       : null
-//   );
-//   const history = Navigate();
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-//   const loginUser = async (e) => {
-//     e.preventDefault();
-//     const response = await AxiosInstance.post("token/", {
-//       username: e.target.username.value,
-//       password: e.target.password.value,
-//     });
-//     if (response.status === 200) {
-//       setAuthTokens(response.data);
-//       setUser(jwt_decode(response.data.access));
-//       localStorage.setItem("authTokens", JSON.stringify(response.data));
-//       history("/");
-//     } else {
-//       alert("Something went wrong!");
-//     }
-//   };
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post("/api/login/", { email, password });
+      localStorage.setItem("token", response.data.access);
+      setUser({ email });
+      navigate("/profile");
+    } catch (error) {
+      toast.error("Login failed. Please check your credentials.");
+      console.error("Failed to login:", error);
+      throw error;
+    }
+  };
 
-//   const registerUser = async (e) => {
-//     e.preventDefault();
-//     const response = await AxiosInstance.post("register/", {
-//       username: e.target.username.value,
-//       email: e.target.email.value,
-//       password: e.target.password.value,
-//     });
-//     if (response.status === 201) {
-//       history("/login");
-//     } else {
-//       alert("Something went wrong!");
-//     }
-//   };
+  const register = async (username, email, password, mobile, address) => {
+    try {
+      const response = await axios.post("/api/register/", {
+        username,
+        email,
+        password,
+        mobile,
+        address,
+      });
+      return response.data;
+      navigate("/login");
+    } catch (error) {
+      console.error("Failed to register:", error);
+      throw error;
+    }
+  };
 
-//   const logoutUser = () => {
-//     setAuthTokens(null);
-//     setUser(null);
-//     localStorage.removeItem("authTokens");
-//     history("/login");
-//   };
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  };
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("/api/profile/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch user profile.");
+      throw error;
+    } finally {
+      setLoading(false); // Stop loading after fetching
+    }
+  };
 
-//   const contextData = {
-//     user,
-//     authTokens,
-//     loginUser,
-//     registerUser,
-//     logoutUser,
-//   };
-
-//   useEffect(() => {
-//     if (authTokens) {
-//       setUser(jwt_decode(authTokens.access));
-//     }
-//   }, [authTokens]);
-
-//   return (
-//     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
-//   );
-// };
+  return (
+    <AuthContext.Provider
+      value={{ user, login, register, logout, fetchUserProfile, loading }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
