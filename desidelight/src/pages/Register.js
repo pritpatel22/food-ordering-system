@@ -29,7 +29,8 @@ export const Register = () => {
       try {
         // Direct registration function here
         await registerUser({ username, email, password, mobile, address });
-        navigate("/profile");
+        localStorage.setItem("userEmail", email);
+        navigate(`/profile/${email}`);
       } catch (err) {
         toast.error(err.message || "Failed to register");
       }

@@ -106,48 +106,45 @@ const Navbar = () => {
                 Explore
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${style.navtext}`}
-                aria-disabled="true"
-                component={Link}
-                to="/search"
-                href="/search"
-              >
-                Search &nbsp; <FaSearch />
-              </a>
-            </li>
-            {useremail ? (
-              <>
-                <li className="nav-item">
-                  <Link to={`/profile/${useremail}`} className="nav-link">
-                    <FaUser />
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <button
-                    className="nav-link btn btn-link"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link to="/login" className="nav-link">
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/register" className="nav-link">
-                    Register
-                  </Link>
-                </li>
-              </>
-            )}
           </ul>
+          <div>
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${style.navtext}`}
+                  aria-disabled="true"
+                  component={Link}
+                  to="/search"
+                  href="/search"
+                >
+                  Search &nbsp; <FaSearch />
+                </a>
+              </li>
+
+              {useremail ? (
+                <div className="d-flex">
+                  <li className="nav-item">
+                    <Link to={`/profile/${useremail}`} className="nav-link">
+                      <FaUser />
+                    </Link>
+                  </li>
+                </div>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link to="/login" className="nav-link">
+                      Login
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/register" className="nav-link">
+                      Register
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </div>
       </div>
     </nav>

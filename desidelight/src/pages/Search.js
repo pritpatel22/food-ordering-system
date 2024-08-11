@@ -69,6 +69,7 @@ const Search = () => {
               <div className={style.Topfoods}>
                 <div style={{ marginTop: "10px" }}>
                   <h5>{food.name}</h5>
+
                   <div className="d-flex gap-1">
                     <strong style={{ fontSize: "20px" }}>
                       <FaStar />

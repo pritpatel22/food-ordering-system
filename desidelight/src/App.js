@@ -8,6 +8,7 @@ import { AuthProvider } from "./pages/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Details from "./pages/Details";
 import Explore from "./pages/Explore";
+import Footer from "./pages/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -33,6 +34,7 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/profile/:email" element={<Profile />} />
           </Routes>
+          <Footer />
         </AuthProvider>
       </Router>
       <ToastContainer />
