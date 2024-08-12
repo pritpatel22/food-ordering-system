@@ -1,5 +1,5 @@
 from xml.dom import NotFoundErr
-from django.shortcuts import get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -27,6 +27,7 @@ from django.db.models import Count, Avg
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -237,46 +238,77 @@ class SearchView(View):
         return JsonResponse(response_data)
 
 
-class Cart(viewsets.ViewSet):
-    def get_cart(self, request):
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+class AddToCartView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=["post"])
-    def add_item(self, request):
-        cart, created = Cart.objects.get_or_create(user=request.user)
+    def post(self, request):
+        email = request.data.get("email")
         food_id = request.data.get("food_id")
         quantity = request.data.get("quantity", 1)
+        price = request.data.get("price")
+        restaurant_id = request.data.get("restaurant_id")
 
-        cart_item, created = CartItem.objects.get_or_create(
-            cart=cart, food_id=food_id, defaults={"quantity": quantity}
-        )
+        try:
+            user = User.objects.get(email=email)
+            food = Food.objects.get(id=food_id)
+            restaurant = Restaurant.objects.get(id=restaurant_id)
+            cart, _ = Cart.objects.get_or_create(user=user)
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=cart, food=food, restaurant=restaurant
+            )
 
-        if not created:
-            cart_item.quantity += quantity
+            if not created:
+                cart_item.quantity += quantity
+            else:
+                cart_item.quantity = quantity
+                cart_item.price = price
+
+            cart_item.save()
+
+            serializer = CartItemSerializer(cart_item)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Food.DoesNotExist:
+            return Response(
+                {"error": "Food not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Restaurant.DoesNotExist:
+            return Response(
+                {"error": "Restaurant not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class CartView(APIView):
+    def get(self, request, email):
+        user = get_object_or_404(User, email=email)
+        cart, _ = Cart.objects.get_or_create(user=user)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UpdateCartItemView(APIView):
+    def put(self, request, email, food_id):
+        user = get_object_or_404(User, email=email)
+        cart = get_object_or_404(Cart, user=user)
+        cart_item = get_object_or_404(CartItem, cart=cart, food_id=food_id)
+
+        new_quantity = request.data.get("quantity")
+        if new_quantity is not None:
+            cart_item.quantity = new_quantity
             cart_item.save()
 
         serializer = CartItemSerializer(cart_item)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["post"])
-    def remove_item(self, request):
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        food_id = request.data.get("food_id")
 
-        CartItem.objects.filter(cart=cart, food_id=food_id).delete()
+class RemoveCartItemView(APIView):
+    def delete(self, request, email, food_id):
+        user = get_object_or_404(User, email=email)
+        cart = get_object_or_404(Cart, user=user)
+        cart_item = get_object_or_404(CartItem, cart=cart, food_id=food_id)
+
+        cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=False, methods=["post"])
-    def update_item(self, request):
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        food_id = request.data.get("food_id")
-        quantity = request.data.get("quantity")
-
-        cart_item = CartItem.objects.get(cart=cart, food_id=food_id)
-        cart_item.quantity = quantity
-        cart_item.save()
-
-        serializer = CartItemSerializer(cart_item)
-        return Response(serializer.data)

@@ -99,12 +99,19 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
-        fields = ["id", "food", "quantity"]
+        fields = [
+            "id",
+            "food",
+            "quantity",
+            "price",
+            "restaurant",
+            "get_total_item_price",
+        ]
 
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
+    items = CartItemSerializer(many=True)
 
     class Meta:
         model = Cart
-        fields = ["id", "user", "created_at", "items"]
+        fields = ["id", "user", "items", "created_at"]

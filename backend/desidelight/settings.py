@@ -70,6 +70,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "desidelight.urls"
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

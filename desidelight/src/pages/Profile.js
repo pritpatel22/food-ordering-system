@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Cart from "./Cart";
 import style from "./style.module.css";
 const Profile = () => {
   const { email } = useParams(); // Get email from URL params
@@ -33,59 +34,69 @@ const Profile = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div
-      className={style.profile}
-      style={{ display: "grid", placeContent: "center", paddingTop: "100px" }}
-    >
-      {profile ? (
-        // <div>
-        //   <h1>{profile.username}</h1>
-        //   <p>Email: {profile.email}</p>
-        //   <p>Mobile: {profile.mobile}</p>
-        //   <p>Address: {profile.address}</p>
-
-        <div className={style.Profilecard}>
-          <div className={style.profile_bg}>
-            <img src="https://wallpapercave.com/wp/wp6693935.jpg" />
-          </div>
-          <div className={style.avtar}>
-            <img src="https://static.vecteezy.com/system/resources/previews/013/042/571/original/default-avatar-profile-icon-social-media-user-photo-in-flat-style-vector.jpg" />
-          </div>
-          <div className={style.username}>
-            <b>
-              <FaUserCircle />
-            </b>
-            &nbsp;&nbsp;
-            {profile.username}
-          </div>
-          <div className={style.subtitle}>
-            <b>Email :</b>
-            {profile.email}
-          </div>
-          <div className={style.subtitle}>
-            <b>Contact : </b>
-            {profile.mobile}
-          </div>
-          <div className={style.subtitle}>
-            <b>Address : </b>
-            {profile.address}
-          </div>
-          <div
-            className={style.wrapper}
-            style={{ display: "flex", gap: "10px", paddingTop: "20px" }}
-          >
-            <button className="btn btn-success">
-              <FaEdit />
-            </button>
-            <button className="btn btn-outline-success" onClick={handleLogout}>
-              <FaSignOutAlt />
-              &nbsp;Logout
-            </button>
-          </div>
+    <div className="row">
+      <div className="col-sm-4">
+        <div
+          className={style.profile}
+          style={{
+            display: "grid",
+            placeContent: "center",
+            paddingTop: "100px",
+          }}
+        >
+          {profile ? (
+            <div className={style.Profilecard}>
+              <div className={style.profile_bg}>
+                <img src="https://wallpapercave.com/wp/wp6693935.jpg" />
+              </div>
+              <div className={style.avtar}>
+                <img src="https://static.vecteezy.com/system/resources/previews/013/042/571/original/default-avatar-profile-icon-social-media-user-photo-in-flat-style-vector.jpg" />
+              </div>
+              <div className={style.username}>
+                <b>
+                  <FaUserCircle />
+                </b>
+                &nbsp;&nbsp;
+                {profile.username}
+              </div>
+              <div className={style.subtitle}>
+                <b>Email :</b>
+                {profile.email}
+              </div>
+              <div className={style.subtitle}>
+                <b>Contact : </b>
+                {profile.mobile}
+              </div>
+              <div className={style.subtitle}>
+                <b>Address : </b>
+                {profile.address}
+              </div>
+              <div
+                className={style.wrapper}
+                style={{ display: "flex", gap: "10px", paddingTop: "20px" }}
+              >
+                <button className="btn btn-success">
+                  <FaEdit />
+                </button>
+                <button
+                  className="btn btn-outline-success"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt />
+                  &nbsp;Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p>Loading...</p>
+          )}
         </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+      </div>
+      <div className="col-sm-8" style={{ paddingTop: "100px" }}>
+        <div className="row">
+          <Cart email={email} />
+        </div>
+      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { fetchFoods } from "../services/api";
+import axios from "axios";
 import { FaArrowRight } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import fetchFoods from "../service/api";
@@ -10,11 +11,38 @@ const Explore = () => {
   const [foods, setFoods] = useState([]);
   const history = useNavigate();
   const { cart } = useCart();
-
-  const handleaddtocart = (id) => {
-    cart(id);
+  const access_token = localStorage.getItem("access_token");
+  const addToCart = (email, foodId, quantity, price, restaurant_id) => {
+    axios
+      .post(
+        "http://localhost:8000/api/cart/add/",
+        {
+          email: email,
+          food_id: foodId,
+          quantity: quantity,
+          price: price,
+          restaurant_id: restaurant_id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          Authorization: {
+            Bearer: access_token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error adding the item to the cart!", error);
+      });
   };
-
+  const handleAddToCart = (id, price, restaurant) => {
+    const email = localStorage.getItem("userEmail");
+    addToCart(email, id, 1, price, restaurant); // Assume `food.id` is available in your component
+  };
   const handleDetailsClick = (id) => {
     history(`/food/${id}`);
   };
@@ -84,7 +112,7 @@ const Explore = () => {
             <div style={{ display: "flex", gap: "10px" }}>
               <button
                 className={`${style.CartBtn} btn btn-success`}
-                onClick={() => handleaddtocart(food.id)}
+                onClick={() => handleAddToCart(food.id, food.price, 2)}
               >
                 <span className={style.IconContainer}>
                   <svg
