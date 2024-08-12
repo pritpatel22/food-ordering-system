@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { FaCartPlus, FaEdit, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Cart from "./Cart";
@@ -92,10 +92,26 @@ const Profile = () => {
           )}
         </div>
       </div>
-      <div className="col-sm-8" style={{ paddingTop: "100px" }}>
-        <div className="row">
-          <Cart email={email} />
+      <div
+        className="col-sm-8"
+        style={{
+          marginTop: "100px",
+          backgroundColor: "#f5f5f5",
+          borderRadius: "20px",
+          padding: "20px",
+
+          height: "650px",
+        }}
+      >
+        <div className="d-flex">
+          <FaCartPlus className="mt-1" />
+          &nbsp;
+          <h5 className="text-center">
+            <b>Your cart</b>
+          </h5>
         </div>
+
+        <Cart email={email} />
       </div>
     </div>
   );

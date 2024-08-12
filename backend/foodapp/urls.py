@@ -31,10 +31,10 @@ urlpatterns = [
     path("api/register/", RegisterView.as_view(), name="register"),
     path("api/login/", LoginView.as_view(), name="login"),
     path("api/profile/<str:email>/", ProfileView.as_view(), name="profile"),
-    path("api/cart/<str:email>/", CartView.as_view(), name="cart"),
     path("api/cart/add/", AddToCartView.as_view(), name="add_to_cart"),
+    path("api/cart/<str:email>/", CartView.as_view(), name="cart"),
     path(
-        "api/cart/<str:email>/<int:food_id>/",
+        "api/cart/update/<str:email>/<int:food_id>/",
         UpdateCartItemView.as_view(),
         name="update-cart-item",
     ),

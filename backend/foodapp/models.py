@@ -92,7 +92,7 @@ class CartItem(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
+    restaurant = models.ForeignKey("Restaurant", on_delete=models.CASCADE, null=True)
 
     def get_total_item_price(self):
         return self.quantity * self.price

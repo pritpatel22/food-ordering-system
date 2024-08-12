@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // import { fetchFoods } from "../services/api";
 import axios from "axios";
 import { FaArrowRight } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
 import fetchFoods from "../service/api";
 import style from "./style.module.css";
@@ -14,26 +15,16 @@ const Explore = () => {
   const access_token = localStorage.getItem("access_token");
   const addToCart = (email, foodId, quantity, price, restaurant_id) => {
     axios
-      .post(
-        "http://localhost:8000/api/cart/add/",
-        {
-          email: email,
-          food_id: foodId,
-          quantity: quantity,
-          price: price,
-          restaurant_id: restaurant_id,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          Authorization: {
-            Bearer: access_token,
-          },
-        }
-      )
+      .post("http://localhost:8000/api/cart/add/", {
+        email,
+        food_id: foodId,
+        quantity,
+        price,
+        restaurant_id: restaurant_id,
+      })
       .then((response) => {
         console.log(response.data);
+        toast.success("Food Added to Cart");
       })
       .catch((error) => {
         console.error("There was an error adding the item to the cart!", error);

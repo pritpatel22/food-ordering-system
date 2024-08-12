@@ -807,3 +807,21 @@ ol {
   color: #198754;
   text-decoration: underline;
 }
+.cart_card {
+  gap: 20px;
+  display: flex;
+  margin-top: 20px;
+  margin-inline-start: 20px;
+  border-radius: 20px;
+}
+.cart_item {
+  border: 2px solid #c2c2c2;
+  padding: 20px;
+  width: 300px;
+  border-radius: 20px;
+}
+@media (max-widht: 800px) {
+  .cart_card {
+    padding-top: 100px;
+  }
+}

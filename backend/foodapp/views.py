@@ -239,46 +239,32 @@ class SearchView(View):
 
 
 class AddToCartView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         email = request.data.get("email")
         food_id = request.data.get("food_id")
-        quantity = request.data.get("quantity", 1)
+        quantity = int(request.data.get("quantity", 1))
         price = request.data.get("price")
         restaurant_id = request.data.get("restaurant_id")
 
-        try:
-            user = User.objects.get(email=email)
-            food = Food.objects.get(id=food_id)
-            restaurant = Restaurant.objects.get(id=restaurant_id)
-            cart, _ = Cart.objects.get_or_create(user=user)
-            cart_item, created = CartItem.objects.get_or_create(
-                cart=cart, food=food, restaurant=restaurant
-            )
+        user = get_object_or_404(User, email=email)
+        food = get_object_or_404(Food, id=food_id)
+        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
 
-            if not created:
-                cart_item.quantity += quantity
-            else:
-                cart_item.quantity = quantity
-                cart_item.price = price
+        cart, created = Cart.objects.get_or_create(user=user)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, food=food, restaurant=restaurant
+        )
 
-            cart_item.save()
+        if not created:
+            cart_item.quantity += quantity
+        else:
+            cart_item.quantity = quantity
+            cart_item.price = price
 
-            serializer = CartItemSerializer(cart_item)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except User.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
-        except Food.DoesNotExist:
-            return Response(
-                {"error": "Food not found"}, status=status.HTTP_404_NOT_FOUND
-            )
-        except Restaurant.DoesNotExist:
-            return Response(
-                {"error": "Restaurant not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+        cart_item.save()
+
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CartView(APIView):
@@ -290,6 +276,7 @@ class CartView(APIView):
 
 
 class UpdateCartItemView(APIView):
+
     def put(self, request, email, food_id):
         user = get_object_or_404(User, email=email)
         cart = get_object_or_404(Cart, user=user)
@@ -300,8 +287,27 @@ class UpdateCartItemView(APIView):
             cart_item.quantity = new_quantity
             cart_item.save()
 
-        serializer = CartItemSerializer(cart_item)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Recalculate the total price
+        total_price = cart_item.get_total_item_price()
+
+        # Prepare the response with updated quantity and total price
+        response_data = {
+            "id": cart_item.id,
+            "food": {
+                "id": cart_item.food.id,
+                "name": cart_item.food.name,
+                "image": cart_item.food.image.url if cart_item.food.image else None,
+            },
+            "quantity": cart_item.quantity,
+            "price": str(cart_item.price),
+            "restaurant": {
+                "id": cart_item.restaurant.id,
+                "name": cart_item.restaurant.name,
+            },
+            "total_item_price": str(total_price),
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class RemoveCartItemView(APIView):
