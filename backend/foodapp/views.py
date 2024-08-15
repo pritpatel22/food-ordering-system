@@ -1,16 +1,19 @@
+import math
 from xml.dom import NotFoundErr
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+import requests
 from rest_framework import generics, viewsets, status
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Cart, CartItem, Restaurant, Food, Review, User
+from .models import Cart, CartItem, OrderItem, Restaurant, Food, Review, User, Orders
 from .serializers import (
+    OrderSerializer,
     RegisterSerializer,
     RestaurantSerializer,
     FoodSerializer,
@@ -23,14 +26,15 @@ from .serializers import (
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import AllowAny
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, OuterRef, Subquery
+from django.forms.models import model_to_dict
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
-
-
-# Create your views here.
+import matplotlib.pyplot as plt
+from io import BytesIO
+from django.http import HttpResponse
 
 
 class RegisterView(APIView):
@@ -56,6 +60,7 @@ class LoginView(APIView):
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(email=email)
+            mobile = user.mobile
             if user.check_password(password):
                 refresh = RefreshToken.for_user(user)
                 return Response(
@@ -153,7 +158,6 @@ class TopFoodsView(View):
             average_rating=Avg("reviews__rating")
         ).order_by("-average_rating")[:4]
 
-        # Prepare the data to be returned as JSON
         data = []
         for food in top_foods:
             # Calculate rating count for the current food item
@@ -163,7 +167,7 @@ class TopFoodsView(View):
                 .annotate(count=Count("rating"))
                 .order_by("rating")
             )
-            # Prepare a dictionary for the rating summary
+
             rating_summary = {
                 rating["rating"]: rating["count"] for rating in rating_count
             }
@@ -177,7 +181,7 @@ class TopFoodsView(View):
                     "image": food.image.url if food.image else None,
                     "average_rating": food.average_rating,
                     "restaurant": food.restaurant.name,
-                    "rating_summary": rating_summary,  # Include rating summary
+                    "rating_summary": rating_summary,
                 }
             )
 
@@ -267,6 +271,62 @@ class AddToCartView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class AddFood(APIView):
+
+    def post(self, request):
+
+        totalfood = len(Food.objects.all())
+        print(totalfood)
+        totalrest = len(Restaurant.objects.all())
+        id = totalfood + 1
+        data = {}
+        data["id"] = id
+        data["name"] = request.data.get("food")
+        data["price"] = request.data.get("price")
+        data["description"] = request.data.get("description")
+        data["category"] = request.data.get("category")
+        data["restaurant_info"] = request.data.get("info")
+
+        restaurant = Restaurant.objects.filter(name=request.data.get("restaurant"))
+        if restaurant:
+            data["restaurant"] = restaurant[0].id
+            print(data)
+            serializer = FoodSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(
+                {"error": "Restaurant not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        # food_api_key = "c51de9694a1e45758658aa4f4bc5d6dd"
+
+
+class AddRestaurant(APIView):
+    def post(self, request):
+        data = {}
+        data["name"] = request.data.get("restaurant")
+        data["address"] = request.data.get("address")
+        totalrest = len(Restaurant.objects.all())
+        data["id"] = totalrest + 1
+        restaurant = Restaurant.objects.filter(name=data["name"])
+        if restaurant:
+            return Response(
+                {"error": "Restaurant already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            serializer = RestaurantSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# bJk3FzoflZtNxzXnQiMPt68eFgXgfvBrS5l6b3vUNlP9RUKV8bwzsgRM pixals
 class CartView(APIView):
     def get(self, request, email):
         user = get_object_or_404(User, email=email)
@@ -318,3 +378,138 @@ class RemoveCartItemView(APIView):
 
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DashbaordView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        restaurants = Restaurant.objects.all()
+        foods = Food.objects.all()
+        # i want highest average rated food and its restaurant
+        top_foods = Food.objects.annotate(
+            average_rating=Avg("reviews__rating")
+        ).order_by("-average_rating")[:1]
+        revies = Review.objects.all()
+        for i in top_foods:
+            topfood = i.name
+            toprest = i.restaurant.name
+        data = {
+            "users": len(users),
+            "restaurants": len(restaurants),
+            "foods": len(foods),
+            "topfood": topfood,
+            "toprest": toprest,
+            "review": len(revies),
+        }
+
+        print(data)
+        return Response(data, status=status.HTTP_200_OK)
+
+
+# c51de9694a1e45758658aa4f4bc5d6dd i am making plot on rating
+class ReviewAnalytics(APIView):
+    def get(self, request):
+        # making bar plot for average rating for all food items with lable of food item and its restaurant name
+        food = Food.objects.annotate(average_rating=Avg("reviews__rating")).order_by(
+            "-average_rating"
+        )
+        labels = []
+        data = []
+        # i will create labels dict with key as food name and value restaurant name
+        for i in food:
+            average_rating = i.average_rating if i.average_rating is not None else 0
+            labels.append(f"{i.name} ({i.restaurant.name})")
+            data.append(average_rating)
+
+        plt.bar(labels, data)
+        plt.xlabel("Food Item")
+        plt.ylabel("Average Rating")
+        plt.title("Average Rating of Food Items")
+        plt.xticks(rotation=40)
+        plt.tight_layout()
+        plt.legend()
+        buffer = BytesIO()
+        plt.savefig(buffer, format="png")
+        buffer.seek(0)
+        return HttpResponse(buffer.getvalue(), content_type="image/png")
+
+
+class MakeOrder(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        user = User.objects.get(email=email)
+        if user:
+            cart = Cart.objects.filter(user=user).first()
+            order = Orders.objects.create(user=user, cart=cart)
+            total = 0
+            for item in cart.items.all():
+                order_item = OrderItem.objects.create(
+                    order=order,
+                    food=item.food,
+                    quantity=item.quantity,
+                    price=item.food.price * item.quantity,
+                )
+                total += order_item.price
+            order.total_price = total
+            order.save()
+            cart.items.all().delete()
+            order_serializer = OrderSerializer(order)
+            return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+def get_coordinates(place_name):
+    api_key = "6ed4c727cf0741efbf42881f8e7df7a0"
+    url = f"https://api.opencagedata.com/geocode/v1/json?q={place_name}&key={api_key}"
+    response = requests.get(url)
+    data = response.json()
+    if data["results"]:
+        lat = data["results"][0]["geometry"]["lat"]
+        lon = data["results"][0]["geometry"]["lng"]
+        return lat, lon
+    return None, None
+
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0
+
+    lat1_rad = math.radians(lat1)
+    lon1_rad = math.radians(lon1)
+    lat2_rad = math.radians(lat2)
+    lon2_rad = math.radians(lon2)
+
+    delta_lat = lat2_rad - lat1_rad
+    delta_lon = lon2_rad - lon1_rad
+
+    a = (
+        math.sin(delta_lat / 2) ** 2
+        + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon / 2) ** 2
+    )
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = R * c
+    return distance
+
+
+class Getdistance(APIView):
+
+    def post(self, request):
+
+        user_address = request.data.get("user")
+        restaurant_address = request.data.get("restaurant")
+        restaurant_address = str(restaurant_address).split(",")
+        res = restaurant_address[0]
+        print(restaurant_address)
+
+        if user_address and restaurant_address:
+            lat1, lon1 = get_coordinates(user_address)
+            lat2, lon2 = get_coordinates(res)
+
+            if lat1 and lon1 and lat2 and lon2:
+                distance = haversine(lat1, lon1, lat2, lon2)
+                return JsonResponse({"distance_km": distance})
+
+        return JsonResponse({"error": "Could not calculate distance"}, status=400)

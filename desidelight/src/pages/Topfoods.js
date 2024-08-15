@@ -71,7 +71,9 @@ const Topfoods = () => {
                       className="font-weight-bold "
                       style={{ fontSize: "20px" }}
                     >
-                      {food.average_rating.toFixed(1)}
+                      {food.average_rating
+                        ? food.average_rating.toFixed(1)
+                        : "No ratings are available"}
                     </p>
                   </div>
                   <p>
@@ -82,38 +84,6 @@ const Topfoods = () => {
                   </button>
                 </div>
               </div>
-              {/* <div className="card mb-4 w-50 h-50">
-              <img
-                src={`http://localhost:8000${food.image}`}
-                className="card-img-top"
-                style={{ width: "300px", height: "300px" }}
-                alt={food.name}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{food.name}</h5>
-                <p className="card-text">{food.description}</p>
-                <p className="card-text">
-                  <strong>Price:</strong> ${food.price}
-                </p>
-                <p className="card-text">
-                  <strong>Restaurant:</strong> {food.restaurant}
-                </p>
-                <p className="card-text">
-                  <strong>Average Rating:</strong>{" "}
-                  {food.average_rating.toFixed(1)}
-                </p>
-                <h6>Rating Summary:</h6>
-                <ul>
-                  {Object.entries(food.rating_summary).map(
-                    ([rating, count]) => (
-                      <li key={rating}>
-                        Rating {rating}: {count} review(s)
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-            </div> */}
             </a>
           </div>
         ))}

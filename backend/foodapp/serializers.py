@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from .models import Restaurant, Food, Review, Cart, CartItem
+from .models import OrderItem, Orders, Restaurant, Food, Review, Cart, CartItem
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, login
@@ -114,7 +114,26 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
+    total_amt = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
-        fields = ["id", "user", "items", "created_at"]
+        fields = ["id", "user", "items", "created_at", "total_amt"]
+
+    def get_total_amt(self, obj):
+        total = sum(i.get_total_item_price() for i in obj.items.all())
+        return total
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ["food", "quantity", "price"]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Orders
+        fields = ["id", "user", "total", "order_items", "order_date", "status"]

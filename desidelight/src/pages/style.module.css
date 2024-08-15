@@ -808,8 +808,10 @@ ol {
   text-decoration: underline;
 }
 .cart_card {
+  position: relative;
   gap: 20px;
-  display: flex;
+  display: grid;
+  place-content: start;
   margin-top: 20px;
   margin-inline-start: 20px;
   border-radius: 20px;
@@ -824,4 +826,97 @@ ol {
   .cart_card {
     padding-top: 100px;
   }
+}
+.cart_card h4 {
+  /* set to bottom of cart card */
+
+  bottom: 0;
+  padding-top: 100px;
+  border-radius: 20px 20px 0 0;
+}
+.dashboard_side {
+  /* background-color: #f5f5f5; */
+  padding: 20px;
+  margin-block: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: self-start;
+  justify-content: start;
+}
+.dashboard_side ul {
+  list-style: none;
+  text-decoration: none;
+  padding: 20px;
+}
+.dashboard_side ul li {
+  margin-top: 40px;
+}
+.dashboard_side ul li .dashboard_link {
+  color: #198754;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: larger;
+  padding: 15px;
+  transition: 1s all;
+  border-radius: 20px;
+}
+.dashboard_side ul li .dashboard_link:active {
+  border: 2px solid #c2c2c2;
+  background-color: #198754;
+  color: white;
+}
+.dashboard_side ul li .dashboard_link:hover {
+  border: 2px solid #c2c2c2;
+  background-color: #198754;
+  color: white;
+}
+.dashboard_content {
+  height: 100vh;
+  overflow: scroll;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 100px;
+}
+.dashboard_content .row {
+  padding: 20px;
+}
+.totaluser {
+  padding: 50px;
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  transition: 2s mix-blend-mode;
+}
+.totaluser:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0);
+  mix-blend-mode: difference;
+  background-color: #fff;
+}
+.totaluserdata {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.plot_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto; /* Adds spacing around the plot */
+  padding: 10px;
+  max-width: 100%;
+  height: auto; /* Maintains aspect ratio */
+  border: 2px solid #ccc; /* Optional border */
+  border-radius: 10px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.plot_image {
+  width: 100%;
+  max-width: 800px; /* Limits max size */
+  height: auto; /* Maintains aspect ratio */
+  display: block;
+  mix-blend-mode: darken;
+  margin: 0 auto;
 }

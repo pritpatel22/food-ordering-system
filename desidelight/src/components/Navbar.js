@@ -64,36 +64,16 @@ const Navbar = () => {
                 About
               </a>
             </li>
-            <li className="nav-item dropdown">
+            <li className="nav-item">
               <a
-                className={`nav-link dropdown-toggle ${style.navtext}`}
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+                className={`nav-link ${style.navtext}`}
+                aria-disabled="true"
+                component={Link}
+                to="/admin"
+                href="/admin"
               >
-                More
+                Admin
               </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Add Restaurants
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Manage restaurant
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Something else here
-                  </a>
-                </li>
-              </ul>
             </li>
             <li className="nav-item">
               <a

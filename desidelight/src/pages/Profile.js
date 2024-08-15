@@ -35,7 +35,7 @@ const Profile = () => {
 
   return (
     <div className="row">
-      <div className="col-sm-4">
+      <div className="col-sm-4 -flex flex-column">
         <div
           className={style.profile}
           style={{

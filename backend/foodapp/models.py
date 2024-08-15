@@ -96,3 +96,26 @@ class CartItem(models.Model):
 
     def get_total_item_price(self):
         return self.quantity * self.price
+
+
+class Orders(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="orders")
+    order_date = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    status = models.CharField(max_length=20, default="Pending")
+
+    def gettime(self):
+        return self.order_date.strftime("%Y-%m-%d %H:%M:%S")
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(
+        Orders, on_delete=models.CASCADE, related_name="order_items"
+    )
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+# 6ed4c727cf0741efbf42881f8e7df7a0
