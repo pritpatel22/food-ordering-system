@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch, FaUser } from "react-icons/fa";
+import { FaCartFlatbed } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 import { useAuth } from "../pages/AuthContext";
 import style from "./style.module.css";
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
@@ -23,12 +41,14 @@ const Navbar = () => {
         >
           &nbsp;&nbsp;
           <img
-            src={
-              "https://img.freepik.com/free-vector/hand-drawn-healthy-food-logo_23-2149651916.jpg?t=st=1721539898~exp=1721543498~hmac=be1b2527a29b646cc8110d0a44d546fcea27f88144de99c01bc6cc6e3f2736be&w=740"
-            }
-            style={{ height: "50px", width: "50px", mixBlendMode: "darken" }}
+            src={logo}
+            style={{
+              height: "50px",
+              width: "50px",
+              mixBlendMode: "darken",
+            }}
           />
-          Happily Fresh
+          DesiDelight
         </a>
         <button
           className="navbar-toggler"
@@ -44,65 +64,68 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a
+              <Link
                 className={`nav-link  ${style.navtext}`}
                 aria-current="page"
                 component={Link}
                 to=""
-                href="/"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a
+              <Link
                 className={`nav-link ${style.navtext}`}
                 component={Link}
                 to="/about"
-                href="/about"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a
+              <Link
                 className={`nav-link ${style.navtext}`}
                 aria-disabled="true"
                 component={Link}
                 to="/admin"
-                href="/admin"
               >
                 Admin
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a
+              <Link
                 className={`nav-link ${style.navtext}`}
                 aria-disabled="true"
                 component={Link}
                 to="/explore"
-                href="/explore"
               >
                 Explore
-              </a>
+              </Link>
             </li>
           </ul>
           <div>
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
               <li className="nav-item">
-                <a
+                <Link
                   className={`nav-link ${style.navtext}`}
                   aria-disabled="true"
                   component={Link}
                   to="/search"
-                  href="/search"
                 >
                   Search &nbsp; <FaSearch />
-                </a>
+                </Link>
               </li>
 
               {useremail ? (
                 <div className="d-flex">
+                  <li className="nav-item">
+                    <Link
+                      to={`/cart/${useremail}`}
+                      className={`nav-link ${style.navtext}`}
+                    >
+                      <FaCartFlatbed /> &nbsp;Cart
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link to={`/profile/${useremail}`} className="nav-link">
                       <FaUser />
@@ -112,12 +135,15 @@ const Navbar = () => {
               ) : (
                 <>
                   <li className="nav-item">
-                    <Link to="/login" className="nav-link">
+                    <Link to="/login" className={`nav-link ${style.navtext}`}>
                       Login
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/register" className="nav-link">
+                    <Link
+                      to="/register"
+                      className={`nav-link ${style.navtext}`}
+                    >
                       Register
                     </Link>
                   </li>

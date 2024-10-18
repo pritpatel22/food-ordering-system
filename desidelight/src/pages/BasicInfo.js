@@ -43,7 +43,7 @@ const BasicInfo = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mt-1">
                 <div className={style.totaluser}>
                   <div style={{ display: "grid", placeContent: "center" }}>
                     <h1 className="text-center text-success">
@@ -62,7 +62,7 @@ const BasicInfo = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mt-1">
                 <div className={style.totaluser}>
                   <div style={{ display: "grid", placeContent: "center" }}>
                     <h1 className="text-center text-success">
@@ -102,7 +102,7 @@ const BasicInfo = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mt-1">
                 <div className={style.totaluser}>
                   <div style={{ display: "grid", placeContent: "center" }}>
                     <h1 className="text-center text-success">
@@ -121,7 +121,7 @@ const BasicInfo = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mt-1">
                 <div className={style.totaluser}>
                   <div style={{ display: "grid", placeContent: "center" }}>
                     <h1 className="text-center text-success">

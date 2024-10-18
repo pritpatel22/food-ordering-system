@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import User
+from .models import History, User, UserInfo
 
 
 class UserAdmin(BaseUserAdmin):
@@ -88,4 +88,6 @@ admin.site.register(CartItem)
 admin.site.register(Cart)
 admin.site.register(Orders)
 admin.site.register(OrderItem)
+admin.site.register(History)
+admin.site.register(UserInfo)
 admin.site.register(User, UserAdmin)

@@ -40,7 +40,7 @@ const RatingProgress = ({ data, onsubmit }) => {
 
   return (
     <>
-      <div className={`${style.review_container} container`}>
+      <div className={`${style.review_container} container mt-3 `}>
         <form onSubmit={handleSubmit}>
           <center
             style={{
@@ -55,7 +55,7 @@ const RatingProgress = ({ data, onsubmit }) => {
           </center>
           {error && <p style={{ color: "red" }}>{error}</p>}
           <div className="container mt-2 text-light">
-            <label>
+            <label className="text-white">
               Rating (1-5) :&nbsp;
               <input
                 style={{ borderRadius: "10px" }}
@@ -68,7 +68,7 @@ const RatingProgress = ({ data, onsubmit }) => {
             </label>
           </div>
           <div className="container text-light mt-2">
-            <label>
+            <label className="text-white">
               Comment :&nbsp;
               <textarea
                 style={{ borderRadius: "10px" }}

@@ -5,6 +5,8 @@ from .models import OrderItem, Orders, Restaurant, Food, Review, Cart, CartItem
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password
+import bcrypt
 
 # from rest_framework import
 User = get_user_model()
@@ -16,25 +18,40 @@ class CreateUserSerializer:
 
 
 class UserSerializer(serializers.ModelSerializer):
+    mobile = serializers.CharField(source="user_info.mobile", read_only=True)
+    address = serializers.CharField(source="user_info.address", read_only=True)
+
     class Meta:
-        model = User
-        fields = ["id", "username", "email", "mobile", "address"]
+        model = get_user_model()
+        fields = ["id", "username", "password", "email", "mobile", "address"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        
+        password = validated_data.pop("password")
+        user = get_user_model().objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=password,  # Pass plain text password here
+        )
+        return user
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "password", "email", "mobile", "address"]
+        fields = ["username", "password", "email"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
+        password = make_password(validated_data["password"])
         user = User.objects.create_user(
             username=validated_data["username"],
             email=validated_data["email"],
-            password=validated_data["password"],
-            mobile=validated_data.get("mobile", ""),
-            address=validated_data.get("address", ""),
+            password=password,
         )
+
+        user.save()
         return user
 
 
@@ -98,7 +115,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     food = FoodSerializer()
-    restaurant = RestaurantSerializer()
+    restaurant = RestaurantSerializer(read_only=True)
 
     class Meta:
         model = CartItem
@@ -110,6 +127,9 @@ class CartItemSerializer(serializers.ModelSerializer):
             "restaurant",
             "get_total_item_price",
         ]
+
+    def get_restaurant(self, obj):
+        return RestaurantSerializer(obj.food.restaurant).data
 
 
 class CartSerializer(serializers.ModelSerializer):

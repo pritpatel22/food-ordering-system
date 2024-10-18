@@ -1,20 +1,14 @@
-// src/components/Search.js
-
 import axios from "axios";
 import React, { useState } from "react";
-import {
-  FaCartPlus,
-  FaSearch,
-  FaShoppingCart,
-  FaStar,
-  FaWpexplorer,
-} from "react-icons/fa";
+import { FaSearch, FaStar, FaWpexplorer } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import style from "./style.module.css";
 
 const Search = () => {
   const [query, setQuery] = useState("");
+  const user = localStorage.getItem("userEmail");
   const [results, setResults] = useState({
     foods: [],
     restaurants: [],
@@ -44,63 +38,98 @@ const Search = () => {
   const handleDetailsClick = (id) => {
     navigate(`/food/${id}`);
   };
+  const addToCart = (email, foodId, quantity, price, restaurant_id) => {
+    if (user) {
+      axios
+        .post("http://localhost:8000/api/cart/add/", {
+          email,
+          food_id: foodId,
+          quantity,
+          price,
+          restaurant_id: restaurant_id,
+        })
+        .then((response) => {
+          console.log(response.data);
+
+          toast.success("Food Added to Cart");
+        })
+        .catch((error) => {
+          console.error(
+            "There was an error adding the item to the cart!",
+            error
+          );
+        });
+    } else {
+      toast.error("Please login to add food to cart");
+    }
+  };
+  const handleAddToCart = (id, price, restaurant) => {
+    const email = localStorage.getItem("userEmail");
+    addToCart(email, id, 1, price, restaurant);
+  };
 
   const fooddearch = () => (
     <div className="container my-4">
       <h2>Food Search Results</h2>
-      <div className="row gap-5">
+      <div
+        className="d-flex gap-5"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
         {results.foods.map((food) => (
-          <div
-            className="col-md-3 mt-4"
-            style={{
-              backgroundColor: "lightgray",
-              display: "grid",
-              placeContent: "center",
-              padding: "15px",
-              borderRadius: "10px",
-            }}
-            key={food.id}
+          <Link
+            to={`/food/${food.id}`}
+            onClick={() => handleDetailsClick(food.id)}
+            style={{ textDecoration: "none", color: "black" }}
           >
-            <Link
-              to={`/food/${food.id}`}
-              onClick={() => handleDetailsClick(food.id)}
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <div className={style.Topfoods}>
-                <div style={{ marginTop: "10px" }}>
-                  <h5>{food.name}</h5>
-
-                  <div className="d-flex gap-1">
-                    <strong style={{ fontSize: "20px" }}>
-                      <FaStar />
-                    </strong>{" "}
-                    <p
-                      className="font-weight-bold "
-                      style={{ fontSize: "20px" }}
-                    >
-                      {food.average_rating
-                        ? food.average_rating.toFixed(1)
-                        : "no ratings"}
-                    </p>
-                  </div>
-                  <p>
-                    <strong>Price:</strong> {food.price}/-
-                  </p>
-                  <p>
-                    <b>Restaurant : </b>
-                    {food.restaurant_name}
-                  </p>
-                  <p>
-                    <b>Address : </b>
-                    {food.restaurant_address}
-                  </p>
-                  <button className="btn btn-success w-100">
-                    <FaShoppingCart />
+            <div className="food-card">
+              <div className="food-card-header">
+                <p>{food.restaurant_name}</p>
+                <p className="food-card-rating">
+                  <span>40-45 MINS</span>
+                  <br />
+                  <span>
+                    {food.average_rating
+                      ? food.average_rating.toFixed(1)
+                      : "no ratings"}
+                    &nbsp;
+                    <FaStar style={{ marginBottom: "5px" }} />
+                  </span>
+                </p>
+              </div>
+              <hr />
+              <div className="food-card-body">
+                <div className="food-card-info">
+                  <h3>{food.name}</h3>
+                  <p>₹{food.price}</p>
+                  <button
+                    className="details-button"
+                    onClick={() => handleDetailsClick(food.id)}
+                  >
+                    More Details
+                  </button>
+                </div>
+                <div className="food-card-image-container">
+                  <img
+                    src={`http://localhost:8000${food.image}`}
+                    alt="Vada Pav"
+                  />
+                  <button
+                    className="add-button"
+                    onClick={() =>
+                      handleAddToCart(food.id, food.price, food.restaurant_name)
+                    }
+                  >
+                    ADD
                   </button>
                 </div>
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -112,12 +141,11 @@ const Search = () => {
       style={{ display: "grid", placeContent: "center" }}
     >
       <h2>Restaurant Search Results</h2>
-      <div className="row gap-5   w-100">
+      <div className="" style={{ display: "grid", placeContent: "center" }}>
         {results.restaurants.map((restaurant) => (
           <div
-            className="col-md-12 mt-4"
+            className="mt-4"
             style={{
-              backgroundColor: "#f5f5f5",
               display: "grid",
               placeContent: "center",
               padding: "15px",
@@ -125,8 +153,8 @@ const Search = () => {
             }}
             key={restaurant.id}
           >
-            <div className={style.Topfoods}>
-              <div style={{ marginTop: "10px" }}>
+            <div className={`container ${style.Topfoods}`}>
+              <div className="container" style={{ marginTop: "10px" }}>
                 <h5 className="text-success">{restaurant.name}</h5>
                 <p style={{ color: "#686B78" }}>
                   <b>Address : </b>
@@ -138,29 +166,51 @@ const Search = () => {
                 </p>
 
                 {restaurant.food_items.map((food) => (
-                  <div className="mt-5">
-                    <h5>
-                      <b>{food.name}</b>
-                    </h5>
-                    <p>
-                      <b>Price: </b>
-                      {food.price}/-
-                    </p>
-                    <p>
-                      <b>Category:</b> {food.category}
-                    </p>
-                    <div className="d-flex gap-3">
-                      <button className="btn btn-outline-success">
-                        <FaCartPlus /> <b>Add to cart</b>
-                      </button>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => handleDetailsClick(food.id)}
-                      >
-                        <b>See</b>
-                      </button>
+                  <Link
+                    to={`/food/${food.id}`}
+                    onClick={() => handleDetailsClick(food.id)}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    <div className="food-card">
+                      <div className="food-card-header">
+                        <p>{food.name}</p>
+                        <p className="food-card-rating">
+                          <span>40-45 MINS</span>
+                        </p>
+                      </div>
+                      <hr />
+                      <div className="food-card-body">
+                        <div className="food-card-info">
+                          <h3>{food.name}</h3>
+                          <p>₹{food.price}</p>
+                          <button
+                            className="details-button"
+                            onClick={() => handleDetailsClick(food.id)}
+                          >
+                            More Details
+                          </button>
+                        </div>
+                        <div className="food-card-image-container">
+                          <img
+                            src={`http://localhost:8000/media/${food.image}`}
+                            alt="Vada Pav"
+                          />
+                          <button
+                            className="add-button"
+                            onClick={() =>
+                              handleAddToCart(
+                                food.id,
+                                food.price,
+                                food.restaurant_name
+                              )
+                            }
+                          >
+                            ADD
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
 
                 <button className="btn btn-success w-100 mt-5">
@@ -177,7 +227,10 @@ const Search = () => {
   );
 
   return (
-    <div className="mt-5 container-fluid" style={{ paddingTop: "50px" }}>
+    <div
+      className="mt-5 container-fluid"
+      style={{ paddingTop: "50px", height: "100vh" }}
+    >
       <div className="mt-5 container p-3" style={{}}>
         <form onSubmit={handleSearch} style={{ display: "flex", gap: "10px" }}>
           <input
@@ -200,9 +253,11 @@ const Search = () => {
         </form>
       </div>
       {loading && (
-        <p className="text-center">
-          <Spinner />
-        </p>
+        <div style={{ display: "grid", placeContent: "center" }}>
+          <p className="text-center">
+            <Spinner />
+          </p>
+        </div>
       )}
       {error && <p>{error}</p>}
       {results.search_type === "food" && fooddearch()}

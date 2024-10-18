@@ -3,14 +3,19 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaCalendarCheck, FaStar } from "react-icons/fa";
 import { FcComments } from "react-icons/fc";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import RatingProgress from "./RatingProgress";
 import style from "./style.module.css";
-
 const Details = () => {
   const { id } = useParams();
   const [food, setFood] = useState(null);
   const [form, setform] = useState(false);
+  const { addProduct } = useCart();
+
+  const handleaddtocart = () => {
+    addProduct(food, 1);
+  };
 
   useEffect(() => {
     const fetchFoodDetails = async () => {
@@ -90,9 +95,9 @@ const Details = () => {
           </div>
           <div className={style.detail_content}>
             <div style={{ display: "flex", gap: "20px" }}>
-              <a className="btn btn-success mb-5" href="/explore">
+              <Link to="/explore" className="btn btn-success mb-5">
                 <FaArrowLeft />
-              </a>
+              </Link>
               <h1 className={style.detail_title}>{food.name}</h1>
             </div>
             <p className={`${style.detail_p} mt-2`}>

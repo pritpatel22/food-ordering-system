@@ -1,80 +1,132 @@
 import React from "react";
-import style from "./style.module.css";
-export const About = () => {
+import { FaHandPointRight } from "react-icons/fa";
+import logo from "../assets/logo.png";
+import "../components/Footer.css";
+
+const About = () => {
   return (
-    <div>
-      <div className={style.login_form}>
-        <div className={style.card}>
-          <div className={style.img}>
-            <img src="https://img.freepik.com/free-vector/hand-drawn-healthy-food-logo_23-2149651916.jpg?t=st=1721539898~exp=1721543498~hmac=be1b2527a29b646cc8110d0a44d546fcea27f88144de99c01bc6cc6e3f2736be&w=740" />
+    <section className="about-section mt-5">
+      <div className="about-container">
+        <div className="about-intro">
+          <img src={logo} alt="Company Logo" className="about-logo" />
+          <div>
+            <h3 className="text-start text-success">
+              <FaHandPointRight />
+              &nbsp;About Us
+            </h3>
+            <p className="about-description">
+              Welcome to <strong>Desi Delight</strong>, where passion for great
+              food meets exceptional service. Our mission is to deliver the most
+              delicious and carefully curated meals from top restaurants right
+              to your doorsteps. We believe in quality, convenience, and
+              community, bringing you a seamless food ordering experience you’ll
+              love.
+            </p>
           </div>
-          <span>About Us</span>
-          <p className={style.info}>
-            I’m Walter, a multidisciplinary designer who focuses on telling my
-            clients’ stories visually, through enjoyable and meaningful
-            experiences. I specialize in responsive websites and functional user
-            interfaces.
+        </div>
+
+        <div className="about-mission">
+          <h3>
+            <FaHandPointRight />
+            &nbsp;Our Mission
+          </h3>
+          <p>
+            At <strong>Your Brand</strong>, our mission is simple: to
+            revolutionize the way people experience food. By connecting
+            customers with their favorite restaurants, we’re creating a platform
+            that celebrates culinary diversity while ensuring freshness and
+            convenience.
           </p>
-          <div className={style.share}>
-            <a href="">
-              <svg
-                viewBox="0 0 16 16"
-                class="bi bi-github"
-                fill="currentColor"
-                height="16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
-              </svg>
-            </a>
-            <a href="">
-              <svg
-                viewBox="0 0 16 16"
-                class="bi bi-twitter"
-                fill="currentColor"
-                height="16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path>
-              </svg>
-            </a>
-            <a href="">
-              <svg
-                viewBox="0 0 16 16"
-                class="bi bi-instagram"
-                fill="currentColor"
-                height="16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"></path>
-              </svg>
-            </a>
-            <a href="">
-              <svg
-                viewBox="0 0 16 16"
-                class="bi bi-youtube"
-                fill="currentColor"
-                height="16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z"></path>
-              </svg>
-            </a>
+        </div>
+
+        <div className="about-team">
+          <h3>
+            <FaHandPointRight />
+            &nbsp;Meet Our Team
+          </h3>
+          <div className="team-grid">
+            <div className="team-member">
+              <img
+                src=" https://img.freepik.com/premium-vector/collection-hand-drawn-profile-icons_1323905-5.jpg?size=626&ext=jpg&ga=GA1.1.1525183143.1707571646&semt=ais_hybrid"
+                alt="Team Member 1"
+              />
+              <h3>Bhuri</h3>
+              <p>Founder & CEO</p>
+              <p>
+                Jane is the visionary behind <strong>Your Brand</strong>, with a
+                passion for great food and customer-centric innovation.
+              </p>
+            </div>
+            <div className="team-member">
+              <img
+                src="https://img.freepik.com/premium-vector/man-with-shirt-that-says-d-it_704913-37099.jpg?size=626&ext=jpg&ga=GA1.1.1525183143.1707571646&semt=ais_hybrid"
+                alt="Team Member 2"
+              />
+              <h3>Yashraj</h3>
+              <p>Chief Operating Officer</p>
+              <p>
+                John ensures the smooth operation of our delivery service,
+                working tirelessly to improve our logistics.
+              </p>
+            </div>
+            <div className="team-member">
+              <img
+                src="https://img.freepik.com/premium-vector/illustrations_995281-35700.jpg?size=626&ext=jpg&ga=GA1.1.1525183143.1707571646&semt=ais_hybrid"
+                alt="Team Member 3"
+              />
+              <h3>Patel Rudra</h3>
+              <p>Marketing Director</p>
+              <p>
+                Sarah is the mastermind behind our branding and marketing
+                strategies, spreading the word about <strong>Your Brand</strong>{" "}
+                far and wide.
+              </p>
+            </div>
           </div>
-          <a
-            href="/"
-            type="button"
-            className="btn btn-white mt-2 text-success bg-white mb-2 w-50 mx-auto d-block"
-          >
-            Home
+        </div>
+
+        <div className="about-values">
+          <h3>
+            <FaHandPointRight />
+            &nbsp;Our Core Values
+          </h3>
+          <ul>
+            <li>
+              <strong>Quality:</strong> Only the best food, sourced from
+              top-rated restaurants.
+            </li>
+            <li>
+              <strong>Community:</strong> We believe in giving back to the
+              communities that support us.
+            </li>
+            <li>
+              <strong>Innovation:</strong> Constantly improving our platform to
+              make your food experience seamless.
+            </li>
+            <li>
+              <strong>Customer-Centric:</strong> You are our top priority, and
+              we are always here to serve you better.
+            </li>
+          </ul>
+        </div>
+
+        <div className="about-cta">
+          <h3>
+            <FaHandPointRight />
+            &nbsp;Join Us on Our Journey
+          </h3>
+          <p className="text-white">
+            Whether you’re a restaurant looking to partner with us or a customer
+            seeking the best meals delivered to your door, we invite you to be a
+            part of our story. Let’s create something amazing together!
+          </p>
+          <a href="/contact" className="cta-button">
+            Get in Touch
           </a>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
+
 export default About;

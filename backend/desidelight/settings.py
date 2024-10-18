@@ -178,6 +178,11 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+]
+
 # virtualenv venv  venv\Scripts\activate
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

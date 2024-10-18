@@ -1,67 +1,73 @@
 import React from "react";
-import style from "./style.module.css";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import logo from "../assets/logo.jpg";
+import "../components/Footer.css";
 const Footer = () => {
   return (
-    <div className={`${style.Footer}`}>
-      <div className={style.about}>
-        <ol>
-          <li>
-            <p className={style.heading}>DesiDelight</p>
-          </li>
-          <li>
-            <p className={style.info}>© 2024 Bundl Technologies Pvt. Ltd</p>
-          </li>
-        </ol>
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-columns">
+          <div className="footer-column">
+            <img src={logo} alt="Food Logo" className="footer-logo" />
+            <p>Delicious food delivered at your doorstep!</p>
+          </div>
+
+          <div className="footer-column">
+            <h4>About Us</h4>
+            <p>We bring food from the best restaurants in your city.</p>
+          </div>
+
+          <div className="footer-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <a href="/menu">Menu</a>
+              </li>
+              <li>
+                <a href="/contact">Contact</a>
+              </li>
+              <li>
+                <a href="/terms">Terms of Service</a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h4>Follow Us</h4>
+            <div className="social-icons">
+              <a target="_blank" href="https://facebook.com">
+                <FaFacebook />
+              </a>
+              <a target="_blank" href="https://twitter.com">
+                <FaTwitter />
+              </a>
+              <a target="_blank" href="https://instagram.com">
+                <FaInstagram />
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-column">
+            <h4>Contact Us</h4>
+            <p>
+              Email:&nbsp;
+              <a href="" className="text-success">
+                desidelight@gmail.com
+              </a>{" "}
+            </p>
+            <p>Phone: +91 9313193747</p>
+          </div>
+        </div>
+
+        {/* Footer Bottom Section */}
+        <div className="footer-bottom">
+          <p>&copy; 2024 DesiDelight. All rights reserved.</p>
+        </div>
       </div>
-      <div className={style.Company}>
-        <ol>
-          <li>
-            <p className={style.heading}>Company</p>
-          </li>
-          <li>
-            <p className={style.info}>About</p>
-          </li>
-          <li>
-            <p className={style.info}>Careers</p>
-          </li>
-          <li>
-            <p className={style.info}>Team</p>
-          </li>
-        </ol>
-      </div>
-      <div className={style.Contact_Us}>
-        <ol>
-          <li>
-            <p className={style.heading}>Contact us</p>
-          </li>
-          <li>
-            <p className={style.info}>Help & Support</p>
-          </li>
-          <li>
-            <p className={style.info}>Partner with us</p>
-          </li>
-          <li>
-            <p className={style.info}>Ride with us</p>
-          </li>
-        </ol>
-      </div>
-      <div className={style.Legal}>
-        <ol>
-          <li className={style.heading}>
-            <p>Terms & Conditions</p>
-          </li>
-          <li className={style.info}>
-            <p>Cookie Policy</p>
-          </li>
-          <li className={style.info}>
-            <p>Privacy Policy</p>
-          </li>
-          <li className={style.info}>
-            <p>Investor Relations</p>
-          </li>
-        </ol>
-      </div>
-    </div>
+    </footer>
   );
 };
 

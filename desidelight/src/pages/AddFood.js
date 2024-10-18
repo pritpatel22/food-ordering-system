@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { IoFastFoodSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
@@ -7,20 +7,60 @@ import Dashboard from "./Dashboard";
 import style from "./style.module.css";
 
 const AddFood = () => {
-  const [data, setdata] = useState({});
-  const handlechange = (e) => {
-    setdata({ ...data, [e.target.name]: e.target.value });
+  const [restaurants, setRestaurants] = useState([]);
+  const [data, setData] = useState({
+    food: "",
+    description: "",
+    price: "",
+    restaurant: "",
+    category: "",
+    info: "",
+    image: null,
+  });
+
+  const handleChange = (e) => {
+    if (e.target.name === "image") {
+      setData({ ...data, [e.target.name]: e.target.files[0] });
+    } else {
+      setData({ ...data, [e.target.name]: e.target.value });
+    }
   };
-  //   #submit
+  useEffect(() => {
+    // Fetch the list of restaurants
+    axios
+      .get("http://localhost:8000/api/restaurants/")
+      .then((response) => {
+        setRestaurants(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching restaurants", error);
+      });
+  }, []);
+
   const submit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
     try {
-      const res = await axios.post("http://localhost:8000/api/addfood/", data);
+      const res = await axios.post(
+        "http://localhost:8000/api/addfood/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(res.data);
       toast.success(`${data.food} Successfully Added`);
     } catch (error) {
+      toast.error("Food item not added");
       console.log(error);
     }
   };
+
   return (
     <div style={{ height: "100vh", paddingTop: "100px" }}>
       <div className="row">
@@ -34,108 +74,108 @@ const AddFood = () => {
                 <FaPlusCircle />
                 &nbsp; Add Food
               </p>
-              <form className={style.form} onSubmit={submit}>
+              <form
+                className={style.form}
+                encType="multipart/form-data"
+                onSubmit={submit}
+              >
                 <div className="row">
                   <div className={`${style.input_group} col-sm-6`}>
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="food">Food</label>
                     <input
                       type="text"
                       id="food"
-                      placeholder="food"
                       name="food"
-                      onChange={handlechange}
+                      placeholder="Food"
+                      value={data.food}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                   <div className={`${style.input_group} col-sm-6`}>
-                    <label htmlFor="email">Description</label>
+                    <label htmlFor="description">Description</label>
                     <input
                       type="text"
-                      name="description"
                       id="description"
-                      placeholder="description"
-                      onChange={handlechange}
+                      name="description"
+                      placeholder="Description"
+                      value={data.description}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                 </div>
                 <div className="row">
                   <div className={`${style.input_group} col-sm-6`}>
-                    <label htmlFor="password">Price</label>
+                    <label htmlFor="price">Price</label>
                     <input
                       type="number"
                       id="price"
-                      placeholder="Price"
                       name="price"
-                      onChange={handlechange}
+                      placeholder="Price"
+                      value={data.price}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                   <div className={`${style.input_group} col-sm-6`}>
                     <label htmlFor="restaurant">Restaurant</label>
-                    <input
-                      type="text"
-                      name="restaurant"
+                    <select
+                      className="form-select"
                       id="restaurant"
-                      placeholder="Restaurant"
-                      onChange={handlechange}
+                      name="restaurant"
+                      value={data.restaurant}
+                      onChange={handleChange}
                       required
-                    />
+                    >
+                      <option value="">Select Restaurant</option>
+                      {restaurants.map((restaurant) => (
+                        <option key={restaurant.id} value={restaurant.id}>
+                          {restaurant}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
                 <div className="row">
                   <div className={`${style.input_group} col-sm-6`}>
-                    <label htmlFor="address">Category</label>
+                    <label htmlFor="category">Category</label>
                     <input
                       type="text"
-                      name="category"
                       id="category"
+                      name="category"
                       placeholder="Category"
-                      onChange={handlechange}
-                      className="p-3"
+                      value={data.category}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                   <div className={`${style.input_group} col-sm-6`}>
-                    <label htmlFor="mobile">Photo</label>
+                    <label htmlFor="image">Photo</label>
                     <input
                       type="file"
+                      id="image"
                       name="image"
-                      id="photo"
-                      placeholder="Image"
-                      accept=".jpg,.jpeg"
-                      onChange={handlechange}
+                      accept=".jpg,.jpeg,.png"
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
                 <div className="row">
                   <div className={`${style.input_group} col-sm-12`}>
-                    <label htmlFor="mobile">Restaurant info</label>
+                    <label htmlFor="info">Restaurant Info</label>
                     <input
                       type="text"
-                      name="info"
                       id="info"
-                      className="p-4"
-                      placeholder="Restaurant info"
-                      onChange={handlechange}
+                      name="info"
+                      placeholder="Restaurant Info"
+                      value={data.info}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                 </div>
-
-                {/* <div className="row">
-                  <div className={`${style.input_group} col-sm-12`}>
-                    <label htmlFor="mobile">Nutritions Info</label>
-                    <input
-                      type="text"
-                      name="nutinfo"
-                      id="nutinfo"
-                      className="p-4"
-                      placeholder="Nutritions info"
-                    />
-                  </div>
-                </div> */}
 
                 <button
                   className="btn btn-success d-block mx-auto w-100 mt-3"

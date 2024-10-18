@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { IoBagCheckOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
+import "../components/CardCSS.css";
 import style from "./style.module.css";
-const Cart = ({ email }) => {
+const Cart = ({ emaill }) => {
+  const { email } = useParams();
   const [cart, setCart] = useState({ items: [] });
   const navigate = useNavigate();
 
@@ -25,9 +28,12 @@ const Cart = ({ email }) => {
     };
     // 3FWUZWXBYRFDUPBDBSGZDTYZ  +12512903756 e97a17f66cfbdc25e0db32a5f4c0288f ACe347fbda9a0e85a95535315dfb7a8316
     fetchCart();
-  }, [email]);
+  }, []);
 
   const handleQuantityChange = async (foodId, newQuantity) => {
+    if (newQuantity == 0) {
+      handleRemoveItem(foodId);
+    }
     try {
       const response = await fetch(
         `http://localhost:8000/api/cart/update/${email}/${foodId}/`,
@@ -58,6 +64,7 @@ const Cart = ({ email }) => {
             : item
         ),
       }));
+      //refresh page
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
@@ -90,120 +97,117 @@ const Cart = ({ email }) => {
 
   if (!cart.items.length)
     return (
+      <>
+        <div
+          style={{
+            height: "100vh",
+            display: "grid",
+            padding: "50px",
+            placeContent: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "300px",
+              height: "300px",
+              backgroundImage:
+                "url(https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/2xempty_cart_yfxml0)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              marginInline: "auto",
+            }}
+          ></div>
+          <h6 className="text-center mt-5">Your cart is empty</h6>
+          <button
+            className="btn btn-success mt-1 mx-auto d-block"
+            onClick={handleNavigateToexplore}
+          >
+            Explore Delights
+          </button>
+        </div>
+      </>
+    );
+
+  return (
+    <div style={{ padding: "20px" }}>
       <div
+        className={` ${style.cart_card}`}
         style={{
-          height: "100%",
-          width: "100%",
+          padding: "20px",
+          gap: "20px",
           display: "grid",
           placeContent: "center",
-          border: "2px solid #c2c2c2",
         }}
       >
-        Your cart is empty.
-        <button
-          className="btn btn-success mt-1 mx-auto d-block"
-          onClick={handleNavigateToexplore}
-        >
-          Explore Delights
-        </button>
-      </div>
-    );
-  console.log(cart.items);
-  return (
-    <div className={` ${style.cart_card}`}>
-      <div className={`row gap-5`}>
-        {cart.items.map((item) => (
-          <div className={`col-sm-4 ${style.cart_item}`} key={item.food.id}>
-            <h3>{item.food.name}</h3>
-            <p>
-              <b>Restaurant : </b> {item.restaurant.name}
-            </p>
-            <p>
-              <b>Quantity : </b>
-              {item.quantity}
-            </p>
-            <p>
-              <b>Price per item: </b>
-              {item.price} /-
-            </p>
-            <p>
-              <b>Total : </b>
-              {item.total_item_price} /-
-            </p>
-            <div
-              style={{
-                display: "flex",
-                placeContent: "center",
-                gap: "10px",
-                fontSize: "30px",
-              }}
-            >
-              <button
-                className="btn text-success"
-                onClick={() =>
-                  handleQuantityChange(item.food.id, item.quantity + 1)
-                }
-              >
-                <FaPlus />
-              </button>
-              <b
-                style={{
-                  textDecoration: "",
-                  color: "#c2c2c1",
-                  marginTop: "6px",
-                }}
-              >
-                {item.quantity}
-              </b>
-              <button
-                className="btn text-success"
-                onClick={() =>
-                  handleQuantityChange(item.food.id, item.quantity - 1)
-                }
-              >
-                <b>
-                  {" "}
-                  <FaMinus />
-                </b>
-              </button>
+        <div className="card-container">
+          <h4 className="text-center text-success">CART</h4>
+          {cart.items.map((item, index) => (
+            <div className="cart-item">
+              <div className="item-info">
+                <img
+                  src={`http://localhost:8000${item.food.image}`}
+                  alt="Item Image"
+                  className="item-image"
+                />
+                <div className="item-details">
+                  <h3>{item.food.name}</h3>
+                  <p>Quantity : {item.quantity}</p>
+                  <p>Price: {item.food.price}</p>
+                </div>
+              </div>
+              <div className="item-controls">
+                <div className="quantity-controls">
+                  <button
+                    className="btn"
+                    onClick={() =>
+                      handleQuantityChange(item.food.id, item.quantity - 1)
+                    }
+                  >
+                    <FaMinus />
+                  </button>
+                  <small
+                    style={{
+                      color: "black",
+                      marginTop: "6px",
+                    }}
+                  >
+                    {item.quantity}
+                  </small>
+                  <button
+                    className="btn"
+                    onClick={() =>
+                      handleQuantityChange(item.food.id, item.quantity + 1)
+                    }
+                  >
+                    <FaPlus />
+                  </button>
+                </div>
+                <div className="item-price">{item.total_item_price}</div>
+                <button
+                  className="btn remove-item"
+                  onClick={() => handleRemoveItem(item.food.id)}
+                >
+                  <MdDelete />
+                </button>
+              </div>
             </div>
-            {/* <button
-            className="btn btn-success"
-            onClick={() =>
-              handleQuantityChange(item.food.id, item.quantity + 1)
-            }
-          >
-            <FaPlus />
+          ))}
+        </div>
+        <div
+          style={{
+            fontFamily: "cursive",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            marginTop: "50px",
+          }}
+        >
+          <h5>Total : {cart.total_amt}/-</h5>&nbsp;&nbsp; &nbsp;&nbsp;
+          <button className="btn btn-success btn-sm" onClick={handlecheckout}>
+            <IoBagCheckOutline /> Check out
           </button>
-          <button
-            className="btn btn-success"
-            onClick={() =>
-              handleQuantityChange(item.food.id, item.quantity - 1)
-            }
-          >
-            <FaMinus />
-          </button> */}
-            <button
-              className="btn btn-danger mt-4"
-              onClick={() => handleRemoveItem(item.food.id)}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          marginTop: "100%",
-          fontFamily: "cursive",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <h3>Total : {cart.total_amt}/-</h3>&nbsp;&nbsp; &nbsp;&nbsp;
-        <button className="btn btn-success" onClick={handlecheckout}>
-          <IoBagCheckOutline /> Check out
-        </button>
+        </div>
       </div>
     </div>
   );

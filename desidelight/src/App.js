@@ -9,18 +9,23 @@ import AddRestaurant from "./pages/AddRestaurant";
 import Admin from "./pages/Admin";
 import { AuthProvider } from "./pages/AuthContext";
 import BasicInfo from "./pages/BasicInfo";
+import Cart from "./pages/Cart";
 import Dashboard from "./pages/Dashboard";
 import Details from "./pages/Details";
 import Explore from "./pages/Explore";
 import Footer from "./pages/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import OrderHistory from "./pages/OrderHistory";
+import Pay from "./pages/Pay";
 import Payment from "./pages/Payment";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
 import Search from "./pages/Search";
+import ThankYou from "./pages/ThankYou";
 import TopRater from "./pages/TopRater";
+import Gpay from "./Payment/Gpay";
 function App() {
   return (
     <>
@@ -44,7 +49,12 @@ function App() {
             <Route path="/addrestaurant" element={<AddRestaurant />} />
             <Route path="/toprater" element={<TopRater />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/pay" element={<Pay />} />
+            <Route path="/gpay" element={<Gpay />} />
+            <Route path="/confirmation" element={<ThankYou />} />
+            <Route path="/history" element={<OrderHistory />} />
             <Route path="/profile/:email" element={<Profile />} />
+            <Route path="/cart/:email" element={<Cart />} />
           </Routes>
           <Footer />
         </AuthProvider>

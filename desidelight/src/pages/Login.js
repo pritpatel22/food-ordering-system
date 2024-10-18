@@ -40,7 +40,12 @@ const Login = () => {
   };
 
   return (
-    <div className={style.login_form}>
+    <div
+      className={style.login_form}
+      style={{
+        backgroundImage: `url(${"https://img.freepik.com/premium-photo/fresh-vegetables-thin-crust-pizza-wooden-cutting-board_1160544-70594.jpg?w=1060"})`,
+      }}
+    >
       <div className={style.form_container}>
         <p className={style.title}>Login</p>
         {error && <p className={style.error}>{error}</p>}{" "}

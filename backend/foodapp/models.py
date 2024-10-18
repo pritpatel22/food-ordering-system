@@ -36,6 +36,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 from django.db import models
 
 
+class UserInfo(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="user_info"
+    )
+    mobile = models.CharField(max_length=10, unique=True)
+    address = models.CharField(null=True, blank=True, max_length=100)
+
+
 class Restaurant(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -69,11 +77,8 @@ class Review(models.Model):
     restaurant = models.ForeignKey(
         Restaurant, related_name="reviews", on_delete=models.CASCADE
     )
-    rating = (
-        models.PositiveIntegerField()
-    )  # Assuming ratings are integers between 1 and 5
+    rating = models.PositiveIntegerField()
     comment = models.TextField(blank=True, null=True)
-    # Add more fields if needed
 
     def __str__(self):
         return f"Review for {self.food.name} at {self.restaurant.name} - Rating: {self.rating}"
@@ -92,7 +97,7 @@ class CartItem(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    restaurant = models.ForeignKey("Restaurant", on_delete=models.CASCADE, null=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
 
     def get_total_item_price(self):
         return self.quantity * self.price
@@ -119,3 +124,13 @@ class OrderItem(models.Model):
 
 
 # 6ed4c727cf0741efbf42881f8e7df7a0
+class History(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Food, on_delete=models.SET_NULL, null=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.SET_NULL, null=True)
+    order_date = models.DateTimeField(auto_now_add=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.item.name} ordered by {self.user.username}"

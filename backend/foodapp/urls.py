@@ -4,6 +4,7 @@ from .views import (
     AddToCartView,
     CartView,
     DashbaordView,
+    OrderHistoryView,
     RemoveCartItemView,
     RestaurantList,
     FoodList,
@@ -20,6 +21,10 @@ from .views import (
     ReviewAnalytics,
     MakeOrder,
     Getdistance,
+    FilterView,
+    DeleteCart,
+    GetRestaurantsView,
+    UserUpdateView,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf import settings
@@ -39,6 +44,7 @@ urlpatterns = [
     path("api/profile/<str:email>/", ProfileView.as_view(), name="profile"),
     path("api/cart/add/", AddToCartView.as_view(), name="add_to_cart"),
     path("api/cart/<str:email>/", CartView.as_view(), name="cart"),
+    path("api/cart/delete/<str:email>/", DeleteCart.as_view(), name="delete"),
     path(
         "api/cart/update/<str:email>/<int:food_id>/",
         UpdateCartItemView.as_view(),
@@ -55,6 +61,12 @@ urlpatterns = [
     path("api/addrestaurant/", AddRestaurant.as_view(), name="dashboard"),
     path("api/checkout/", MakeOrder.as_view(), name="order"),
     path("api/getdistance/", Getdistance.as_view(), name="getdistance"),
+    path("api/filter/", FilterView.as_view(), name="filter"),
+    path(
+        "api/orderhistory/<str:email>/", OrderHistoryView.as_view(), name="orderhistory"
+    ),
+    path("api/restaurants/", GetRestaurantsView.as_view(), name="restaurants"),
+    path("api/userupdate/<int:id>/", UserUpdateView.as_view(), name="update"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
