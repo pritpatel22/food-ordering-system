@@ -18,7 +18,7 @@ export const Dashboard = () => {
         console.log("Failed to load top foods");
       }
     };
-    // 3FWUZWXBYRFDUPBDBSGZDTYZ  +12512903756 e97a17f66cfbdc25e0db32a5f4c0288f ACe347fbda9a0e85a95535315dfb7a8316
+    
     fetch();
   }, []);
   return (
